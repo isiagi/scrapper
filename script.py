@@ -10,13 +10,12 @@ cursor = conn.cursor()
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS courses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    provider TEXT NOT NULL
+    title TEXT NOT NULL
 )
 ''')
 
 # URL of the website with free courses
-URL = ''
+URL = 'https://www.oxfordhomestudy.com/free-online-courses-with-certificates'
 
 # Send a GET request to fetch the page content
 response = requests.get(URL)
@@ -27,37 +26,37 @@ if response.status_code == 200:
     soup = BeautifulSoup(response.text, 'html.parser')
     
     # Find all the course elements (update the tag and class based on the site structure)
-    courses = soup.find_all('div', class_='css-16m4c33')
+    courses = soup.find_all('div', class_='myresp')
 
         # Find all image elements
-    images = soup.find_all('img')
+    # images = soup.find_all('img')
     
     # Loop through each image and extract the src attribute (image URL)
-    for img in images:
-        img_url = img.get('src')
-        if img_url:
-            print(f'Image URL: {img_url}')
-            print('---')
+    # for img in images:
+    #     img_url = img.get('src')
+    #     if img_url:
+    #         print(f'Image URL: {img_url}')
+    #         print('---')
     
     # Loop through each course and extract title and provider
     for course in courses:
         # Extract the course title
-        title_element = course.find('h3', class_='cds-CommonCard-title')
-        provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+        title_element = course.find('div', class_='rbenconch')
+        # provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
 
         # If title or provider elements are missing, skip this course
-        if title_element is not None and provider_element is not None:
+        if title_element is not None :
             title = title_element.text.strip()
-            provider = provider_element.text.strip()
+            # provider = provider_element.text.strip()
 
             # Insert course data into the database
             cursor.execute('''
-            INSERT INTO courses (title, provider) 
-            VALUES (?, ?)
-            ''', (title, provider))
+            INSERT INTO courses (title) 
+            VALUES (?)
+            ''', (title,))
 
             print(f'Course: {title}')
-            print(f'Provider: {provider}')
+            # print(f'Provider: {provider}')
             print('---')
 
     # Commit the changes to the database
