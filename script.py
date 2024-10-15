@@ -1,69 +1,77 @@
 import requests
 from bs4 import BeautifulSoup
-import sqlite3
+import csv
 
-# Create or connect to SQLite database
-conn = sqlite3.connect('courses.db')
-cursor = conn.cursor()
+# CSV file to store courses
+csv_file = 'courses.csv'
 
-# Create a table to store courses if it doesn't exist
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    provider TEXT NOT NULL
-)
-''')
+# Open CSV file in write mode
+with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.writer(file)
 
-# URL of the website with free courses
-URL = ''
+    # Write the header row
+    writer.writerow(['Title', 'Provider'])
 
-# Send a GET request to fetch the page content
-response = requests.get(URL)
+    # URL of the websites with free courses
+    URL = 'https://www.coursera.org/courses?query=free'
+    URL2 = 'https://pll.harvard.edu/catalog/free'
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # Find all the course elements (update the tag and class based on the site structure)
-    courses = soup.find_all('div', class_='css-16m4c33')
+    # Send a GET request to fetch the page content for Coursera
+    response = requests.get(URL)
 
-        # Find all image elements
-    images = soup.find_all('img')
-    
-    # Loop through each image and extract the src attribute (image URL)
-    for img in images:
-        img_url = img.get('src')
-        if img_url:
-            print(f'Image URL: {img_url}')
-            print('---')
-    
-    # Loop through each course and extract title and provider
-    for course in courses:
-        # Extract the course title
-        title_element = course.find('h3', class_='cds-CommonCard-title')
-        provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+    # Check if the request was successful for Coursera
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        courses = soup.find_all('div', class_='css-16m4c33')
 
-        # If title or provider elements are missing, skip this course
-        if title_element is not None and provider_element is not None:
-            title = title_element.text.strip()
-            provider = provider_element.text.strip()
+        for course in courses:
+            title_element = course.find('h3', class_='cds-CommonCard-title')
+            provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
 
-            # Insert course data into the database
-            cursor.execute('''
-            INSERT INTO courses (title, provider) 
-            VALUES (?, ?)
-            ''', (title, provider))
+            if title_element is not None and provider_element is not None:
+                title = title_element.text.strip()
+                provider = provider_element.text.strip()
 
-            print(f'Course: {title}')
-            print(f'Provider: {provider}')
-            print('---')
+                # Write the data to the CSV file
+                writer.writerow([title, provider])
 
-    # Commit the changes to the database
-    conn.commit()
-else:
-    print(f"Failed to retrieve the webpage. Status code: {response.status_code}")
+                print(f'Course: {title}')
+                print(f'Provider: {provider}')
+                print('---')
+    else:
+        print(f"Failed to retrieve Coursera webpage. Status code: {response.status_code}")
 
-# Close the database connection
-conn.close()
+    # Send a GET request to fetch the page content for Harvard
+    response2 = requests.get(URL2)
+
+    # Check if the request was successful for Harvard
+    if response2.status_code == 200:
+        soup2 = BeautifulSoup(response2.text, 'html.parser')
+
+        # DEBUG: Log the HTML response to inspect the structure
+        # print("Harvard HTML response:")
+        # print(soup2.prettify())
+
+        oxfords = soup2.find_all('div', class_='group-details')
+
+        # if not oxfords:
+        #     print("No 'group-details' elements found. Check the HTML structure.")
+        
+        for oxford in oxfords:
+            title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
+            provider_element = oxford.find('h3', class_='field__item')
+
+            if title_element is not None and provider_element is not None:
+                title = title_element.text.strip()
+                provider = provider_element.text.strip()
+
+                # Write the data to the CSV file
+                writer.writerow([title, provider])
+
+                print(f'Course: {title}')
+                print(f'Provider: {provider}')
+                print('---')
+    else:
+        print(f"Failed to retrieve Harvard webpage. Status code: {response2.status_code}")
+
+print(f"Data has been successfully written to {csv_file}")
