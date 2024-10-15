@@ -1,28 +1,13 @@
-Title,Provider
-Business Analysis & Process Management,Coursera Project Network
-Build a free website with WordPress,Coursera Project Network
-Introduction to Microsoft Excel,Coursera Project Network
-English for Common Interactions in the Workplace: Basic Level,Pontificia Universidad CatÃ³lica de Chile
-First Step Korean,Yonsei University
-Investment Risk Management,Coursera Project Network
-Creative Thinking: Techniques and Tools for Success,Imperial College London
-English for Career Development,University of Pennsylvania
-"Python for Data Science, AI & Development",IBM
-Cybersecurity for Everyone,"University of Maryland, College Park"
-Food & Beverage Management,UniversitÃ  Bocconi
-Financial Markets,Yale University
-Humanities,PredictionX: Lost Without Longitude
-Humanities,"PredictionX: Omens, Oracles & Prophecies"
-Social Sciences,Systematic Approaches to Policy Design
-Social Sciences,New Ideas for Nonprofit Leaders Webinar
-Social Sciences,4P Model for Strategic Leadership Podcasts
-Social Sciences,The Science of Corresponding with Busy People Webinar
-Computer Science,CS50's Introduction to Programming with Scratch
-Social Sciences,Global News & Technology Leadership in Challenging Times
-Social Sciences,Our Information Emergency: Navigating the Media Environment in 2021
-Computer Science,CS50's Introduction to Artificial Intelligence with Python
-Computer Science,CS50 for Lawyers
-Business,Negotiating Salary
-Business,Resilient Leadership
-Health & Medicine,Clinical Care for Autistic Adults
-Social Sciences,A Darkening Horizon: Nuclear Dangers Around the World with Matthew Bunn
+Title,Provider,Rating,Skills
+Business Analysis & Process Management,Coursera Project Network,4.4,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Coursera Project Network</p>"
+Build a free website with WordPress,Coursera Project Network,4.4,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Coursera Project Network</p>"
+Introduction to Microsoft Excel,Coursera Project Network,4.6,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Coursera Project Network</p>"
+English for Common Interactions in the Workplace: Basic Level,Pontificia Universidad CatÃ³lica de Chile,4.7,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Pontificia Universidad CatÃ³lica de Chile</p>"
+First Step Korean,Yonsei University,4.9,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Yonsei University</p>"
+Investment Risk Management,Coursera Project Network,4.3,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Coursera Project Network</p>"
+Creative Thinking: Techniques and Tools for Success,Imperial College London,4.7,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Imperial College London</p>"
+English for Career Development,University of Pennsylvania,4.8,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">University of Pennsylvania</p>"
+"Python for Data Science, AI & Development",IBM,4.6,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">IBM</p>"
+Cybersecurity for Everyone,"University of Maryland, College Park",4.7,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">University of Maryland, College Park</p>"
+Food & Beverage Management,UniversitÃ  Bocconi,4.8,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">UniversitÃ  Bocconi</p>"
+Financial Markets,Yale University,4.8,"<p class=""cds-ProductCard-partnerNames css-vac8rf"">Yale University</p>"
