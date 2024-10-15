@@ -10,7 +10,7 @@ with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
 
     # Write the header row
-    writer.writerow(['Title', 'Provider'])
+    writer.writerow(['Title', 'Provider', 'Detail'])
 
     # URL of the websites with free courses
     URL = 'https://www.coursera.org/courses?query=free'
@@ -27,16 +27,24 @@ with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
         for course in courses:
             title_element = course.find('h3', class_='cds-CommonCard-title')
             provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+            detail_element = course.find('div', class_='cds-ProductCard-body')
 
             if title_element is not None and provider_element is not None:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
 
+                # Check if detail_element exists before extracting text
+                if detail_element is not None:
+                    detail = detail_element.text.strip()
+                else:
+                    detail = 'N/A'  # Assign a default value if detail is not found
+
                 # Write the data to the CSV file
-                writer.writerow([title, provider])
+                writer.writerow([title, provider, detail])
 
                 print(f'Course: {title}')
                 print(f'Provider: {provider}')
+                print(f'Detail: {detail}')
                 print('---')
     else:
         print(f"Failed to retrieve Coursera webpage. Status code: {response.status_code}")
