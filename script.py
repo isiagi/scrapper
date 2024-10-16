@@ -28,13 +28,18 @@ def get_coursera_courses():
                 rating = rating_element.text.strip() if rating_element else 'N/A'
                 detail = detail_element.text.strip() if detail_element else 'N/A'
 
+                 # Create link by transforming the title into a URL-friendly format
+                link_title = title.lower().replace(' ', '-')
+                link = f"https://www.coursera.org/learn/{link_title}"
+
                 course_data = {
                     "id": idx + 1,  # Incremental ID
                     "title": title,
                     "provider": provider,
                     "detail": detail,
                     "rating": rating,
-                    "category": "Online Course"  # Default category
+                    "category": "Online Course", # Default category
+                    "link": link
                 }
                 courses_list.append(course_data)
 
