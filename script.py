@@ -27,7 +27,7 @@ with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
         for course in courses:
             title_element = course.find('h3', class_='cds-CommonCard-title')
             provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
-            skills_element = course.find('div', class_='cds-CommonCard-bodyContent')
+            detail_element = course.find('div', class_='cds-CommonCard-bodyContent')
             rating_element = course.find('p', class_='css-2xargn')
 
 
@@ -35,15 +35,20 @@ with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
                 rating = rating_element.text.strip()
-                skills = skills_element
+               
+                                # Check if detail_element exists before extracting text
+                if detail_element is not None:
+                    detail = detail_element.text.strip()
+                else:
+                    detail = 'N/A'  # Assign a default value if detail is not found
 
                 # Write the data to the CSV file
-                writer.writerow([title, provider, rating, skills])
+                writer.writerow([title, provider, rating, detail])
 
                 print(f'Course: {title}')
                 print(f'Provider: {provider}')
                 print(f'Rating: {rating}')
-                print(f'Skills: {skills}')
+                print(f'Skills: {detail}')
                 print('---')
     else:
         print(f"Failed to retrieve Coursera webpage. Status code: {response.status_code}")
@@ -51,3 +56,5 @@ with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
    
 
 print(f"Data has been successfully written to {csv_file}")
+
+
