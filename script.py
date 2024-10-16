@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -64,7 +65,7 @@ def get_harvard_courses():
                     "provider": "Harvard",
                     "detail": 'N/A',
                     "rating": 'N/A',
-                    "category": title  # Default category for Harvard
+                    "category": title
                 }
                 courses_list.append(course_data)
 
@@ -82,6 +83,9 @@ def get_courses():
         course["id"] = harvard_start_id + idx  # Assign new unique ID
 
     all_courses = coursera_courses + harvard_courses
+
+    # Shuffle the course list to randomize order
+    random.shuffle(all_courses)
     return jsonify(all_courses)
 
 if __name__ == '__main__':
