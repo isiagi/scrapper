@@ -1,85 +1,88 @@
+from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
-import csv
 
-# CSV file to store courses
-csv_file = 'courses.csv'
+app = Flask(__name__)
+CORS(app)
 
-# Open CSV file in write mode
-with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
-    writer = csv.writer(file)
-
-    # Write the header row
-    writer.writerow(['Title', 'Provider', 'Detail'])
-
-    # URL of the websites with free courses
+# Function to scrape Coursera courses
+def get_coursera_courses():
+    courses_list = []
     URL = 'https://www.coursera.org/courses?query=free'
-    URL2 = 'https://pll.harvard.edu/catalog/free'
-
-    # Send a GET request to fetch the page content for Coursera
     response = requests.get(URL)
-
-    # Check if the request was successful for Coursera
+    
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         courses = soup.find_all('div', class_='css-16m4c33')
 
-        for course in courses:
+        for idx, course in enumerate(courses):
             title_element = course.find('h3', class_='cds-CommonCard-title')
             provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
             detail_element = course.find('div', class_='cds-ProductCard-body')
+            rating_element = course.find('p', class_='css-2xargn')
 
-            if title_element is not None and provider_element is not None:
+            if title_element and provider_element:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
+                rating = rating_element.text.strip() if rating_element else 'N/A'
+                detail = detail_element.text.strip() if detail_element else 'N/A'
 
-                # Check if detail_element exists before extracting text
-                if detail_element is not None:
-                    detail = detail_element.text.strip()
-                else:
-                    detail = 'N/A'  # Assign a default value if detail is not found
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    "title": title,
+                    "provider": provider,
+                    "detail": detail,
+                    "rating": rating,
+                    "category": "Online Course"  # Default category
+                }
+                courses_list.append(course_data)
 
-                # Write the data to the CSV file
-                writer.writerow([title, provider, detail])
+    return courses_list
 
-                print(f'Course: {title}')
-                print(f'Provider: {provider}')
-                print(f'Detail: {detail}')
-                print('---')
-    else:
-        print(f"Failed to retrieve Coursera webpage. Status code: {response.status_code}")
-
-    # Send a GET request to fetch the page content for Harvard
+# Function to scrape Harvard courses
+def get_harvard_courses():
+    courses_list = []
+    URL2 = 'https://pll.harvard.edu/catalog/free'
     response2 = requests.get(URL2)
 
-    # Check if the request was successful for Harvard
     if response2.status_code == 200:
         soup2 = BeautifulSoup(response2.text, 'html.parser')
-
-        # DEBUG: Log the HTML response to inspect the structure
-        # print("Harvard HTML response:")
-        # print(soup2.prettify())
-
         oxfords = soup2.find_all('div', class_='group-details')
 
-        # if not oxfords:
-        #     print("No 'group-details' elements found. Check the HTML structure.")
-        
-        for oxford in oxfords:
+        for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues
             title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
             provider_element = oxford.find('h3', class_='field__item')
 
-            if title_element is not None and provider_element is not None:
+            if title_element and provider_element:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
 
-                # Write the data to the CSV file
-                writer.writerow([title, provider])
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    "title": title,
+                    "provider": provider,
+                    "detail": 'N/A',
+                    "rating": 'N/A',
+                    "category": "Harvard"  # Default category for Harvard
+                }
+                courses_list.append(course_data)
 
-                print(f'Course: {title}')
-                print(f'Provider: {provider}')
-                print('---')
-    else:
-        print(f"Failed to retrieve Harvard webpage. Status code: {response2.status_code}")
+    return courses_list
 
-print(f"Data has been successfully written to {csv_file}")
+# API endpoint to return all courses
+@app.route('/api/courses', methods=['GET'])
+def get_courses():
+    coursera_courses = get_coursera_courses()
+    harvard_courses = get_harvard_courses()
+
+    # Ensure unique IDs by offsetting the Harvard courses
+    harvard_start_id = len(coursera_courses) + 1
+    for idx, course in enumerate(harvard_courses):
+        course["id"] = harvard_start_id + idx  # Assign new unique ID
+
+    all_courses = coursera_courses + harvard_courses
+    return jsonify(all_courses)
+
+if __name__ == '__main__':
+    app.run(debug=True)

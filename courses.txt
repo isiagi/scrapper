@@ -1,0 +1,164 @@
+[
+    {
+        "title": "Business Analysis & Process Management",
+        "provider": "Coursera Project Network",
+        "detail": "Skills you'll gain: Business Analysis, Business Process Management",
+        "rating": "4.4"
+    },
+    {
+        "title": "Build a free website with WordPress",
+        "provider": "Coursera Project Network",
+        "detail": "Skills you'll gain: Creativity, Web Design, Web Development",
+        "rating": "4.4"
+    },
+    {
+        "title": "Introduction to Microsoft Excel",
+        "provider": "Coursera Project Network",
+        "detail": "Skills you'll gain: Data Analysis, Microsoft Excel, Data Management, Leadership and Management",
+        "rating": "4.6"
+    },
+    {
+        "title": "English for Common Interactions in the Workplace: Basic Level",
+        "provider": "Pontificia Universidad Cat\u00c3\u00b3lica de Chile",
+        "detail": "N/A",
+        "rating": "4.7"
+    },
+    {
+        "title": "First Step Korean",
+        "provider": "Yonsei University",
+        "detail": "Skills you'll gain: Culture, Writing",
+        "rating": "4.9"
+    },
+    {
+        "title": "Investment Risk Management",
+        "provider": "Coursera Project Network",
+        "detail": "Skills you'll gain: Leadership and Management, Risk Management",
+        "rating": "4.3"
+    },
+    {
+        "title": "Creative Thinking: Techniques and Tools for Success",
+        "provider": "Imperial College London",
+        "detail": "Skills you'll gain: Creativity, Problem Solving, Collaboration",
+        "rating": "4.7"
+    },
+    {
+        "title": "English for Career Development",
+        "provider": "University of Pennsylvania",
+        "detail": "Skills you'll gain: Business Communication, Human Resources, Human Resources Operations, Application Development, People Analysis",
+        "rating": "4.8"
+    },
+    {
+        "title": "Python for Data Science, AI & Development",
+        "provider": "IBM",
+        "detail": "Skills you'll gain: Computer Programming, Data Analysis, Python Programming",
+        "rating": "4.6"
+    },
+    {
+        "title": "Cybersecurity for Everyone",
+        "provider": "University of Maryland, College Park",
+        "detail": "Skills you'll gain: Cyberattacks, Human Computer Interaction, Network Security, Security Engineering, Security Strategy, Computer Security Models, Leadership and Management, Risk Management, Software Security, Correlation And Dependence",
+        "rating": "4.7"
+    },
+    {
+        "title": "Food & Beverage Management",
+        "provider": "Universit\u00c3\u00a0 Bocconi",
+        "detail": "Skills you'll gain: Design and Product, Marketing, Business Analysis, Customer Analysis, Product Marketing, Product Strategy, Communication, Entrepreneurship, Leadership and Management, Marketing Management, Strategy",
+        "rating": "4.8"
+    },
+    {
+        "title": "Financial Markets",
+        "provider": "Yale University",
+        "detail": "Skills you'll gain: Finance, Risk Management, Banking, Behavioral Economics, Critical Thinking, Decision Making, Financial Analysis, Innovation, Regulations and Compliance",
+        "rating": "4.8"
+    },
+    {
+        "title": "Humanities",
+        "provider": "PredictionX: Lost Without Longitude",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Humanities",
+        "provider": "PredictionX: Omens, Oracles & Prophecies",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "Systematic Approaches to Policy Design",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "New Ideas for Nonprofit Leaders Webinar",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "4P Model for Strategic Leadership Podcasts",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "The Science of Corresponding with Busy People Webinar",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Computer Science",
+        "provider": "CS50's Introduction to Programming with Scratch",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "Global News & Technology Leadership in Challenging Times",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "Our Information Emergency: Navigating the Media Environment in 2021",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Computer Science",
+        "provider": "CS50's Introduction to Artificial Intelligence with Python",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Computer Science",
+        "provider": "CS50 for Lawyers",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Business",
+        "provider": "Negotiating Salary",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Business",
+        "provider": "Resilient Leadership",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Health & Medicine",
+        "provider": "Clinical Care for Autistic Adults",
+        "detail": "N/A",
+        "rating": "N/A"
+    },
+    {
+        "title": "Social Sciences",
+        "provider": "A Darkening Horizon: Nuclear Dangers Around the World with Matthew Bunn",
+        "detail": "N/A",
+        "rating": "N/A"
+    }
+]
