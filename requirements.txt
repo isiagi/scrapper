@@ -1,7 +1,7 @@
 appdirs==1.4.3
 asgiref==3.8.1
 awsebcli==3.20.10
-backports.zoneinfo==0.2.1
+backports.zoneinfo;python_version<"3.9"
 bcrypt==3.1.7
 beautifulsoup4==4.12.3
 blessed==1.20.0
