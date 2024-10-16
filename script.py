@@ -31,7 +31,7 @@ def get_coursera_courses():
                 course_data = {
                     "id": idx + 1,  # Incremental ID
                     "title": title,
-                    "provider": provider,
+                    "provider": "coursera / " + provider,
                     "detail": detail,
                     "rating": rating,
                     "category": "Online Course"  # Default category
@@ -60,11 +60,11 @@ def get_harvard_courses():
 
                 course_data = {
                     "id": idx + 1,  # Incremental ID
-                    "title": title,
-                    "provider": provider,
+                    "title": provider,
+                    "provider": "Harvard",
                     "detail": 'N/A',
                     "rating": 'N/A',
-                    "category": "Harvard"  # Default category for Harvard
+                    "category": title  # Default category for Harvard
                 }
                 courses_list.append(course_data)
 
