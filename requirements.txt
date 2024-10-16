@@ -87,7 +87,6 @@ six==1.14.0
 soupsieve==2.6
 sqlparse==0.5.0
 termcolor==1.1.0
-ttystatus==0.38
 typing-extensions==4.12.2
 ubuntu-advantage-tools==8001
 ubuntu-drivers-common==0.0.0
