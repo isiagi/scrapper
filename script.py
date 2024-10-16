@@ -1,69 +1,97 @@
+from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
-import sqlite3
+import random
 
-# Create or connect to SQLite database
-conn = sqlite3.connect('courses.db')
-cursor = conn.cursor()
+app = Flask(__name__)
+CORS(app)
 
-# Create a table to store courses if it doesn't exist
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    provider TEXT NOT NULL
-)
-''')
-
-# URL of the website with free courses
-URL = ''
-
-# Send a GET request to fetch the page content
-response = requests.get(URL)
-
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
+# Function to scrape Coursera courses
+def get_coursera_courses():
+    courses_list = []
+    URL = 'https://www.coursera.org/courses?query=free'
+    response = requests.get(URL)
     
-    # Find all the course elements (update the tag and class based on the site structure)
-    courses = soup.find_all('div', class_='css-16m4c33')
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        courses = soup.find_all('div', class_='css-16m4c33')
 
-        # Find all image elements
-    images = soup.find_all('img')
-    
-    # Loop through each image and extract the src attribute (image URL)
-    for img in images:
-        img_url = img.get('src')
-        if img_url:
-            print(f'Image URL: {img_url}')
-            print('---')
-    
-    # Loop through each course and extract title and provider
-    for course in courses:
-        # Extract the course title
-        title_element = course.find('h3', class_='cds-CommonCard-title')
-        provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+        for idx, course in enumerate(courses):
+            title_element = course.find('h3', class_='cds-CommonCard-title')
+            provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+            detail_element = course.find('div', class_='cds-ProductCard-body')
+            rating_element = course.find('p', class_='css-2xargn')
 
-        # If title or provider elements are missing, skip this course
-        if title_element is not None and provider_element is not None:
-            title = title_element.text.strip()
-            provider = provider_element.text.strip()
+            if title_element and provider_element:
+                title = title_element.text.strip()
+                provider = provider_element.text.strip()
+                rating = rating_element.text.strip() if rating_element else 'N/A'
+                detail = detail_element.text.strip() if detail_element else 'N/A'
 
-            # Insert course data into the database
-            cursor.execute('''
-            INSERT INTO courses (title, provider) 
-            VALUES (?, ?)
-            ''', (title, provider))
+                 # Create link by transforming the title into a URL-friendly format
+                link_title = title.lower().replace(' ', '-')
+                link = f"https://www.coursera.org/learn/{link_title}"
 
-            print(f'Course: {title}')
-            print(f'Provider: {provider}')
-            print('---')
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    "title": title,
+                    "provider": "coursera / " + provider,
+                    "detail": detail,
+                    "rating": rating,
+                    "category": "Online Course", # Default category
+                    "link": link
+                }
+                courses_list.append(course_data)
 
-    # Commit the changes to the database
-    conn.commit()
-else:
-    print(f"Failed to retrieve the webpage. Status code: {response.status_code}")
+    return courses_list
 
-# Close the database connection
-conn.close()
+# Function to scrape Harvard courses
+def get_harvard_courses():
+    courses_list = []
+    URL2 = 'https://pll.harvard.edu/catalog/free'
+    response2 = requests.get(URL2)
+
+    if response2.status_code == 200:
+        soup2 = BeautifulSoup(response2.text, 'html.parser')
+        oxfords = soup2.find_all('div', class_='group-details')
+
+        for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues
+            title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
+            provider_element = oxford.find('h3', class_='field__item')
+
+            if title_element and provider_element:
+                title = title_element.text.strip()
+                provider = provider_element.text.strip()
+
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    "title": provider,
+                    "provider": "Harvard",
+                    "detail": 'N/A',
+                    "rating": 'N/A',
+                    "category": title
+                }
+                courses_list.append(course_data)
+
+    return courses_list
+
+# API endpoint to return all courses
+@app.route('/api/courses', methods=['GET'])
+def get_courses():
+    coursera_courses = get_coursera_courses()
+    harvard_courses = get_harvard_courses()
+
+    # Ensure unique IDs by offsetting the Harvard courses
+    harvard_start_id = len(coursera_courses) + 1
+    for idx, course in enumerate(harvard_courses):
+        course["id"] = harvard_start_id + idx  # Assign new unique ID
+
+    all_courses = coursera_courses + harvard_courses
+
+    # Shuffle the course list to randomize order
+    random.shuffle(all_courses)
+    return jsonify(all_courses)
+
+if __name__ == '__main__':
+    app.run(debug=True)

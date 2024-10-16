@@ -1,6 +1,6 @@
 .env
-myenv
+env
 courses.db
 
 / .env
-/ myenv
+/ env
