@@ -12,7 +12,7 @@ cement==2.8.2
 certifi==2019.11.28
 chardet==3.0.4
 charset-normalizer==3.3.2
-cliapp==1.20180812.1
+cliapp==1.0.9
 click==8.1.7
 colorama==0.4.3
 command-not-found==0.3
