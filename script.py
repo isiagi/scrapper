@@ -3,50 +3,61 @@ from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 import random
+import time
 
 app = Flask(__name__)
 CORS(app)
 
 # Function to scrape Coursera courses
-def get_coursera_courses():
+def get_coursera_courses(max_pages=5):
     courses_list = []
-    URL = 'https://www.coursera.org/courses?query=free'
-    response = requests.get(URL)
-    
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        courses = soup.find_all('div', class_='css-16m4c33')
+    base_url = 'https://www.coursera.org/courses?query=free'
+    page = 1
 
-        for idx, course in enumerate(courses):
-            title_element = course.find('h3', class_='cds-CommonCard-title')
-            provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
-            detail_element = course.find('div', class_='cds-ProductCard-body')
-            rating_element = course.find('p', class_='css-2xargn')
-            # Find the relevant <a> tag
-            a_tag = course.find('a', class_=lambda value: value and 'cds-CommonCard-titleLink' in value)
+    while page <= max_pages:
+        url = f"{base_url}&page={page}&index=prod_all_launched_products_term_optimization"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            courses = soup.find_all('div', class_='css-16m4c33')
 
-            if title_element and provider_element:
-                title = title_element.text.strip()
-                provider = provider_element.text.strip()
-                rating = rating_element.text.strip() if rating_element else 'N/A'
-                detail = detail_element.text.strip() if detail_element else 'N/A'
+            if not courses:
+                break  # No more courses found, exit the loop
 
-                # Extract the link from the <a> tag
-                # Extract the href attribute
-                link_href = 'https://www.coursera.org' + a_tag['href'] if a_tag and 'href' in a_tag.attrs else None
+            for course in courses:
+                title_element = course.find('h3', class_='cds-CommonCard-title')
+                provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
+                detail_element = course.find('div', class_='cds-ProductCard-body')
+                rating_element = course.find('p', class_='css-2xargn')
+                a_tag = course.find('a', class_=lambda value: value and 'cds-CommonCard-titleLink' in value)
 
-                course_data = {
-                    "id": idx + 1,  # Incremental ID
-                    "title": title,
-                    "provider": "coursera / " + provider,
-                    "detail": detail,
-                    "rating": rating,
-                    "category": "Online Course", # Default category
-                    "link": link_href
-                }
-                courses_list.append(course_data)
+                if title_element and provider_element:
+                    title = title_element.text.strip()
+                    provider = provider_element.text.strip()
+                    rating = rating_element.text.strip() if rating_element else 'N/A'
+                    detail = detail_element.text.strip() if detail_element else 'N/A'
+                    link_href = 'https://www.coursera.org' + a_tag['href'] if a_tag and 'href' in a_tag.attrs else None
+
+                    course_data = {
+                        "title": title,
+                        "provider": "coursera / " + provider,
+                        "detail": detail,
+                        "rating": rating,
+                        "category": "Online Course",
+                        "link": link_href
+                    }
+                    courses_list.append(course_data)
+
+            print(f"Scraped page {page}, found {len(courses)} courses")
+            page += 1
+            time.sleep(2)  # Be respectful with rate limiting
+        else:
+            print(f"Failed to retrieve page {page}. Status code: {response.status_code}")
+            break
 
     return courses_list
+    
 
 # Function to scrape Harvard courses
 def get_harvard_courses():
