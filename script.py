@@ -3,6 +3,7 @@ from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 import random
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -57,14 +58,10 @@ def get_harvard_courses():
     if response2.status_code == 200:
         soup2 = BeautifulSoup(response2.text, 'html.parser')
         oxfords = soup2.find_all('div', class_='group-details')
-        # Extract the link from the course title <a> tag
-        course_link = soup2.find('h3', class_='field__item').find('a')['href']
-        
-        link_href = 'https://pll.harvard.edu' + course_link
 
-        for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues
-            title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
-            provider_element = oxford.find('h3', class_='field__item')
+        for idx, harvard in enumerate(harvards, start=len(courses_list) + 1):  # Ensure unique ID continues
+            title_element = harvard.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
+            provider_element = harvard.find('h3', class_='field__item')
 
             if title_element and provider_element:
                 title = title_element.text.strip()
@@ -85,22 +82,69 @@ def get_harvard_courses():
 
     return courses_list
 
+def get_stanford_courses():
+    courses_list = []
+    URL3 = 'https://online.stanford.edu/explore?filter%5B0%5D=free_or_paid%3Afree&keywords=&items_per_page=12'
+    
+    # Add headers to simulate a browser request
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    }
+    
+    response3 = requests.get(URL3, headers=headers)
+
+    if response3.status_code == 200:
+        soup3 = BeautifulSoup(response3.text, 'html.parser')
+        stanfords = soup3.find_all('a', class_='node node--type-course')
+
+        for idx, stanford in enumerate(stanfords, start=len(courses_list) + 1):  # Ensure unique ID continues
+            title_element = stanford.find('div', class_='field title')
+            provider_element = stanford.find('div', class_='school field field-school')
+            detail_element = stanford.find('div', class_='field field-sections')
+
+            if title_element and provider_element:
+                title = title_element.text.strip()
+                provider = provider_element.text.strip()
+                detail = detail_element.text.strip() if detail_element else 'N/A'
+
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    "title": title,
+                    "provider": provider,
+                    "detail": detail,
+                    "rating": 'N/A',
+                    "category": "Online courses"
+                }
+                courses_list.append(course_data)
+
+    return courses_list
+
 # API endpoint to return all courses
 @app.route('/api/courses', methods=['GET'])
 def get_courses():
+    # Fetch courses from different platforms
     coursera_courses = get_coursera_courses()
     harvard_courses = get_harvard_courses()
+    stanford_courses = get_stanford_courses()
 
-    # Ensure unique IDs by offsetting the Harvard courses
+    # Step 1: Assign unique IDs to Harvard courses after Coursera courses
     harvard_start_id = len(coursera_courses) + 1
     for idx, course in enumerate(harvard_courses):
-        course["id"] = harvard_start_id + idx  # Assign new unique ID
+        course["id"] = harvard_start_id + idx  # Assign new unique ID for Harvard courses
 
-    all_courses = coursera_courses + harvard_courses
+    # Step 2: Assign unique IDs to Stanford courses after Harvard courses
+    stanford_start_id = harvard_start_id + len(harvard_courses)
+    for idx, course in enumerate(stanford_courses):
+        course["id"] = stanford_start_id + idx  # Assign new unique ID for Stanford courses
 
-    # Shuffle the course list to randomize order
+    # Combine all courses into one list
+    all_courses = coursera_courses + harvard_courses + stanford_courses
+
+    # Optionally shuffle the course list to randomize the order
     random.shuffle(all_courses)
+
     return jsonify(all_courses)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
