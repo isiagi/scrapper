@@ -59,12 +59,16 @@ def get_harvard_courses():
         oxfords = soup2.find_all('div', class_='group-details')
         # Extract the link from the course title <a> tag
         course_link = soup2.find('h3', class_='field__item').find('a')['href']
-        
-        link_href = 'https://pll.harvard.edu' + course_link
+
+        print(course_link)
+
 
         for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues
             title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
             provider_element = oxford.find('h3', class_='field__item')
+            course_href = oxford.find('h3', class_='field__item').find('a')['href']
+
+            link_href = 'https://pll.harvard.edu' + course_href
 
             if title_element and provider_element:
                 title = title_element.text.strip()
@@ -81,7 +85,51 @@ def get_harvard_courses():
                 }
                 courses_list.append(course_data)
 
+    return courses_list
+
+def get_Udacity_courses():
+    courses_list = []
+    URL2 = 'https://www.classcentral.com/provider/udacity?free=true'
+
+# Set headers to mimic a browser request
+    headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
+    response2 = requests.get(URL2, headers=headers)
+
+
+    if response2.status_code == 200:
+        soup3 = BeautifulSoup(response2.text, 'html.parser')
+        oxfords = soup3.find_all('li', class_='course-list-course')
+        # print(oxfords)
+        # Extract the link from the course title <a> tag
+        course_link = soup3.find('div', class_='row').find('a')['href']
+        
+        link_href = 'https://pll.harvard.edu' + course_link
+
+        for idx, oxford in enumerate(oxfords):  # Ensure unique ID continues
+            title_element = oxford.find('div', class_='row').find('h2')
+            print(title_element)
+            # provider_element = oxford.find('h3', class_='field__item')
+            # print(course_link)
+
+            if title_element:
+                title = title_element.text.strip()
+                # provider = provider_element.text.strip()
+
+                course_data = {
+                    "id": idx + 1,  # Incremental ID
+                    # "title": provider,
+                    "provider": "Harvard555",
+                    "detail": 'N/A',
+                    "rating": 'N/A',
+                    "category": title,
+                    "link": link_href
+                }
                 print(course_data)
+                courses_list.append(course_data)
+
 
     return courses_list
 
@@ -90,6 +138,8 @@ def get_harvard_courses():
 def get_courses():
     coursera_courses = get_coursera_courses()
     harvard_courses = get_harvard_courses()
+    udacity_coursed = get_Udacity_courses()
+
 
     # Ensure unique IDs by offsetting the Harvard courses
     harvard_start_id = len(coursera_courses) + 1
@@ -99,6 +149,7 @@ def get_courses():
     all_courses = coursera_courses + harvard_courses
 
     # Shuffle the course list to randomize order
+    # print(all_courses)
     random.shuffle(all_courses)
     return jsonify(all_courses)
 
