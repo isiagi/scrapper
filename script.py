@@ -57,6 +57,10 @@ def get_harvard_courses():
     if response2.status_code == 200:
         soup2 = BeautifulSoup(response2.text, 'html.parser')
         oxfords = soup2.find_all('div', class_='group-details')
+        # Extract the link from the course title <a> tag
+        course_link = soup2.find('h3', class_='field__item').find('a')['href']
+        
+        link_href = 'https://pll.harvard.edu' + course_link
 
         for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues
             title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
@@ -72,9 +76,12 @@ def get_harvard_courses():
                     "provider": "Harvard",
                     "detail": 'N/A',
                     "rating": 'N/A',
-                    "category": title
+                    "category": title,
+                    "link": link_href
                 }
                 courses_list.append(course_data)
+
+                print(course_data)
 
     return courses_list
 
