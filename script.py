@@ -22,6 +22,8 @@ def get_coursera_courses():
             provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
             detail_element = course.find('div', class_='cds-ProductCard-body')
             rating_element = course.find('p', class_='css-2xargn')
+            # Find the relevant <a> tag
+            a_tag = course.find('a', class_=lambda value: value and 'cds-CommonCard-titleLink' in value)
 
             if title_element and provider_element:
                 title = title_element.text.strip()
@@ -29,9 +31,9 @@ def get_coursera_courses():
                 rating = rating_element.text.strip() if rating_element else 'N/A'
                 detail = detail_element.text.strip() if detail_element else 'N/A'
 
-                 # Create link by transforming the title into a URL-friendly format
-                link_title = title.lower().replace(' ', '-')
-                link = f"https://www.coursera.org/learn/{link_title}"
+                # Extract the link from the <a> tag
+                # Extract the href attribute
+                link_href = 'https://www.coursera.org' + a_tag['href'] if a_tag and 'href' in a_tag.attrs else None
 
                 course_data = {
                     "id": idx + 1,  # Incremental ID
@@ -40,7 +42,7 @@ def get_coursera_courses():
                     "detail": detail,
                     "rating": rating,
                     "category": "Online Course", # Default category
-                    "link": link
+                    "link": link_href
                 }
                 courses_list.append(course_data)
 
