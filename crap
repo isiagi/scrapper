@@ -1,0 +1,203 @@
+[1mdiff --git a/requirement.txt b/requirement.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..47fe261[m
+[1m--- /dev/null[m
+[1m+++ b/requirement.txt[m
+[36m@@ -0,0 +1,112 @@[m
+[32m+[m[32mappdirs==1.4.3[m
+[32m+[m[32mapturl==0.5.2[m
+[32m+[m[32masgiref==3.8.1[m
+[32m+[m[32mawsebcli==3.20.10[m
+[32m+[m[32mbackports.zoneinfo==0.2.1[m
+[32m+[m[32mbcrypt==3.1.7[m
+[32m+[m[32mbeautifulsoup4==4.12.3[m
+[32m+[m[32mblessed==1.20.0[m
+[32m+[m[32mblinker==1.8.2[m
+[32m+[m[32mbotocore==1.31.85[m
+[32m+[m[32mBrlapi==0.7.0[m
+[32m+[m[32mbs4==0.0.2[m
+[32m+[m[32mcement==2.8.2[m
+[32m+[m[32mcertifi==2019.11.28[m
+[32m+[m[32mchardet==3.0.4[m
+[32m+[m[32mcharset-normalizer==3.3.2[m
+[32m+[m[32mchrome-gnome-shell==0.0.0[m
+[32m+[m[32mcliapp==1.20180812.1[m
+[32m+[m[32mclick==8.1.7[m
+[32m+[m[32mcolorama==0.4.3[m
+[32m+[m[32mcommand-not-found==0.3[m
+[32m+[m[32mcryptography==2.8[m
+[32m+[m[32mcupshelpers==1.0[m
+[32m+[m[32mdbus-python==1.2.16[m
+[32m+[m[32mdefer==1.0.6[m
+[32m+[m[32mdefusedxml==0.6.0[m
+[32m+[m[32mdistlib==0.3.0[m
+[32m+[m[32mdistro==1.4.0[m
+[32m+[m[32mdistro-info==0.23+ubuntu1.1[m
+[32m+[m[32mDjango==4.2.14[m
+[32m+[m[32mduplicity==0.8.12.0[m
+[32m+[m[32mentrypoints==0.3[m
+[32m+[m[32mfasteners==0.14.1[m
+[32m+[m[32mfilelock==3.0.12[m
+[32m+[m[32mflask==3.0.3[m
+[32m+[m[32mFlask-Cors==5.0.0[m
+[32m+[m[32mfuture==0.18.2[m
+[32m+[m[32mhttplib2==0.14.0[m
+[32m+[m[32midna==2.8[m
+[32m+[m[32mimportlib-metadata==8.5.0[m
+[32m+[m[32mitsdangerous==2.2.0[m
+[32m+[m[32mjinja2==3.1.4[m
+[32m+[m[32mjmespath==1.0.1[m
+[32m+[m[32mkazam==1.4.5[m
+[32m+[m[32mkeyring==18.0.1[m
+[32m+[m[32mlanguage-selector==0.1[m
+[32m+[m[32mlaunchpadlib==1.10.13[m
+[32m+[m[32mlazr.restfulclient==0.14.2[m
+[32m+[m[32mlazr.uri==1.0.3[m
+[32m+[m[32mlockfile==0.12.2[m
+[32m+[m[32mlouis==3.12.0[m
+[32m+[m[32mmacaroonbakery==1.3.1[m
+[32m+[m[32mMako==1.1.0[m
+[32m+[m[32mMarkdown==3.1.1[m
+[32m+[m[32mMarkupSafe==2.1.5[m
+[32m+[m[32mmonotonic==1.5[m
+[32m+[m[32mmore-itertools==4.2.0[m
+[32m+[m[32mnetifaces==0.10.4[m
+[32m+[m[32moauthlib==3.1.0[m
+[32m+[m[32molefile==0.46[m
+[32m+[m[32mopenshot-qt==3.1.1[m
+[32m+[m[32mpackaging==20.3[m
+[32m+[m[32mparamiko==2.6.0[m
+[32m+[m[32mpathspec==0.10.1[m
+[32m+[m[32mpexpect==4.6.0[m
+[32m+[m[32mPillow==7.0.0[m
+[32m+[m[32mprotobuf==3.6.1[m
+[32m+[m[32mpycairo==1.16.2[m
+[32m+[m[32mpycups==1.9.73[m
+[32m+[m[32mPygments==2.3.1[m
+[32m+[m[32mPyGObject==3.36.0[m
+[32m+[m[32mPyJWT==1.7.1[m
+[32m+[m[32mpymacaroons==0.13.0[m
+[32m+[m[32mPyNaCl==1.3.0[m
+[32m+[m[32mpyparsing==2.4.6[m
+[32m+[m[32mPyQt5==5.14.1[m
+[32m+[m[32mPyQtWebEngine==5.14.0[m
+[32m+[m[32mpyRFC3339==1.1[m
+[32m+[m[32mpython-apt==2.0.1+ubuntu0.20.4.1[m
+[32m+[m[32mpython-dateutil==2.7.3[m
+[32m+[m[32mpython-debian==0.1.36+ubuntu1.1[m
+[32m+[m[32mpytz==2019.3[m
+[32m+[m[32mpyxdg==0.26[m
+[32m+[m[32mPyYAML==5.3.1[m
+[32m+[m[32mpyzmq==18.1.1[m
+[32m+[m[32mreportlab==3.5.34[m
+[32m+[m[32mrequests==2.31.0[m
+[32m+[m[32mrequests-unixsocket==0.2.0[m
+[32m+[m[32mSecretStorage==2.3.1[m
+[32m+[m[32msemantic-version==2.8.5[m
+[32m+[m[32msentry-sdk==0.12.2[m
+[32m+[m[32msimplejson==3.16.0[m
+[32m+[m[32msip==4.19.21[m
+[32m+[m[32msix==1.14.0[m
+[32m+[m[32msoupsieve==2.6[m
+[32m+[m[32msqlparse==0.5.0[m
+[32m+[m[32msystemd-python==234[m
+[32m+[m[32mtermcolor==1.1.0[m
+[32m+[m[32mttystatus==0.38[m
+[32m+[m[32mtyping-extensions==4.12.2[m
+[32m+[m[32mubuntu-advantage-tools==8001[m
+[32m+[m[32mubuntu-drivers-common==0.0.0[m
+[32m+[m[32mufw==0.36[m
+[32m+[m[32munattended-upgrades==0.1[m
+[32m+[m[32murllib3==1.26.18[m
+[32m+[m[32musb-creator==0.3.7[m
+[32m+[m[32mvirtualenv==20.0.17[m
+[32m+[m[32mwadllib==1.3.3[m
+[32m+[m[32mwcwidth==0.1.9[m
+[32m+[m[32mwerkzeug==3.0.4[m
+[32m+[m[32mxkit==0.0.0[m
+[32m+[m[32mzipp==3.20.2[m
+[1mdiff --git a/requirements.txt b/requirements.txt[m
+[1mdeleted file mode 100644[m
+[1mindex 7ff9cdd..0000000[m
+[1m--- a/requirements.txt[m
+[1m+++ /dev/null[m
+[36m@@ -1,19 +0,0 @@[m
+[31m-beautifulsoup4==4.12.3[m
+[31m-blinker==1.8.2[m
+[31m-bs4==0.0.2[m
+[31m-certifi==2024.8.30[m
+[31m-charset-normalizer==3.4.0[m
+[31m-click==8.1.7[m
+[31m-flask==3.0.3[m
+[31m-Flask-Cors==5.0.0[m
+[31m-idna==3.10[m
+[31m-importlib-metadata==8.5.0[m
+[31m-itsdangerous==2.2.0[m
+[31m-jinja2==3.1.4[m
+[31m-MarkupSafe==2.1.5[m
+[31m-requests==2.32.3[m
+[31m-soupsieve==2.6[m
+[31m-urllib3==2.2.3[m
+[31m-werkzeug==3.0.4[m
+[31m-zipp==3.20.2[m
+[31m-gunicorn==19.7.1[m
+\ No newline at end of file[m
+[1mdiff --git a/script.py b/script.py[m
+[1mindex 3823f31..0652a55 100644[m
+[1m--- a/script.py[m
+[1m+++ b/script.py[m
+[36m@@ -3,6 +3,7 @@[m [mfrom flask_cors import CORS[m
+ import requests[m
+ from bs4 import BeautifulSoup[m
+ import random[m
+[32m+[m[32mimport requests[m
+ [m
+ app = Flask(__name__)[m
+ CORS(app)[m
+[36m@@ -22,8 +23,6 @@[m [mdef get_coursera_courses():[m
+             provider_element = course.find('p', class_='cds-ProductCard-partnerNames')[m
+             detail_element = course.find('div', class_='cds-ProductCard-body')[m
+             rating_element = course.find('p', class_='css-2xargn')[m
+[31m-            # Find the relevant <a> tag[m
+[31m-            a_tag = course.find('a', class_=lambda value: value and 'cds-CommonCard-titleLink' in value)[m
+ [m
+             if title_element and provider_element:[m
+                 title = title_element.text.strip()[m
+[36m@@ -31,9 +30,9 @@[m [mdef get_coursera_courses():[m
+                 rating = rating_element.text.strip() if rating_element else 'N/A'[m
+                 detail = detail_element.text.strip() if detail_element else 'N/A'[m
+ [m
+[31m-                # Extract the link from the <a> tag[m
+[31m-                # Extract the href attribute[m
+[31m-                link_href = 'https://www.coursera.org' + a_tag['href'] if a_tag and 'href' in a_tag.attrs else None[m
+[32m+[m[32m                 # Create link by transforming the title into a URL-friendly format[m
+[32m+[m[32m                link_title = title.lower().replace(' ', '-')[m
+[32m+[m[32m                link = f"https://www.coursera.org/learn/{link_title}"[m
+ [m
+                 course_data = {[m
+                     "id": idx + 1,  # Incremental ID[m
+[36m@@ -42,7 +41,7 @@[m [mdef get_coursera_courses():[m
+                     "detail": detail,[m
+                     "rating": rating,[m
+                     "category": "Online Course", # Default category[m
+[31m-                    "link": link_href[m
+[32m+[m[32m                    "link": link[m
+                 }[m
+                 courses_list.append(course_data)[m
+ [m
+[36m@@ -56,15 +55,11 @@[m [mdef get_harvard_courses():[m
+ [m
+     if response2.status_code == 200:[m
+         soup2 = BeautifulSoup(response2.text, 'html.parser')[m
+[31m-        oxfords = soup2.find_all('div', class_='group-details')[m
+[31m-        # Extract the link from the course title <a> tag[m
+[31m-        course_link = soup2.find('h3', class_='field__item').find('a')['href'][m
+[31m-        [m
+[31m-        link_href = 'https://pll.harvard.edu' + course_link[m
+[32m+[m[32m        harvards = soup2.find_all('div', class_='group-details')[m
+ [m
+[31m-        for idx, oxford in enumerate(oxfords, start=len(courses_list) + 1):  # Ensure unique ID continues[m
+[31m-            title_element = oxford.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')[m
+[31m-            provider_element = oxford.find('h3', class_='field__item')[m
+[32m+[m[32m        for idx, harvard in enumerate(harvards, start=len(courses_list) + 1):  # Ensure unique ID continues[m
+[32m+[m[32m            title_element = harvard.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-
