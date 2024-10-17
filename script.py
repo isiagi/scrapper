@@ -57,7 +57,7 @@ def get_harvard_courses():
 
     if response2.status_code == 200:
         soup2 = BeautifulSoup(response2.text, 'html.parser')
-        oxfords = soup2.find_all('div', class_='group-details')
+        harvards = soup2.find_all('div', class_='group-details')
 
         for idx, harvard in enumerate(harvards, start=len(courses_list) + 1):  # Ensure unique ID continues
             title_element = harvard.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
