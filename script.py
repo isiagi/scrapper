@@ -63,6 +63,10 @@ def get_harvard_courses():
             title_element = harvard.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
             provider_element = harvard.find('h3', class_='field__item')
 
+            course_href = harvard.find('h3', class_='field__item').find('a')['href']
+
+            link_href = 'https://pll.harvard.edu' + course_href
+
             if title_element and provider_element:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
@@ -78,11 +82,9 @@ def get_harvard_courses():
                 }
                 courses_list.append(course_data)
 
-                print(course_data)
 
     return courses_list
 
-def get_stanford_courses():
     courses_list = []
     URL3 = 'https://online.stanford.edu/explore?filter%5B0%5D=free_or_paid%3Afree&keywords=&items_per_page=12'
     
@@ -102,6 +104,8 @@ def get_stanford_courses():
             provider_element = stanford.find('div', class_='school field field-school')
             detail_element = stanford.find('div', class_='field field-sections')
 
+            link_href = 'https://online.stanford.edu' + stanford['href']
+
             if title_element and provider_element:
                 title = title_element.text.strip()
                 provider = provider_element.text.strip()
@@ -113,7 +117,8 @@ def get_stanford_courses():
                     "provider": provider,
                     "detail": detail,
                     "rating": 'N/A',
-                    "category": "Online courses"
+                    "category": "Online courses",
+                    "link": link_href
                 }
                 courses_list.append(course_data)
 
@@ -125,20 +130,14 @@ def get_courses():
     # Fetch courses from different platforms
     coursera_courses = get_coursera_courses()
     harvard_courses = get_harvard_courses()
-    stanford_courses = get_stanford_courses()
 
     # Step 1: Assign unique IDs to Harvard courses after Coursera courses
     harvard_start_id = len(coursera_courses) + 1
     for idx, course in enumerate(harvard_courses):
         course["id"] = harvard_start_id + idx  # Assign new unique ID for Harvard courses
 
-    # Step 2: Assign unique IDs to Stanford courses after Harvard courses
-    stanford_start_id = harvard_start_id + len(harvard_courses)
-    for idx, course in enumerate(stanford_courses):
-        course["id"] = stanford_start_id + idx  # Assign new unique ID for Stanford courses
-
     # Combine all courses into one list
-    all_courses = coursera_courses + harvard_courses + stanford_courses
+    all_courses = coursera_courses + harvard_courses
 
     # Optionally shuffle the course list to randomize the order
     random.shuffle(all_courses)
