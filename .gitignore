@@ -1,6 +1,8 @@
 .env
 env
 courses.db
+myenv
 
 / .env
 / env
+/ myenv
