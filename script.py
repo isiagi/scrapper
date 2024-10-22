@@ -54,7 +54,7 @@ class CourseScraper:
 
         courses = soup.find_all('div', class_='css-16m4c33')
 
-        for idx, course in enumerate(courses):
+        for course in courses:
             try:
                 title_element = course.find('h3', class_='cds-CommonCard-title')
                 provider_element = course.find('p', class_='cds-ProductCard-partnerNames')
@@ -96,7 +96,8 @@ class CourseScraper:
 
         courses = soup.find_all('div', class_='group-details')
 
-        for idx, course in enumerate(courses, start=len(course_list) + 1):  # Ensure unique ID continues
+        for course in courses: 
+            
             try:
                 title_element = course.find('div', class_='field field---extra-field-pll-extra-field-subject field--name-extra-field-pll-extra-field-subject field--type- field--label-inline clearfix')
                 provider_element = course.find('h3', class_='field__item')
