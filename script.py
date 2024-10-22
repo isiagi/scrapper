@@ -8,7 +8,6 @@ import logging
 import requests
 from concurrent.futures import ThreadPoolExecutor
 import uuid
-import time
 import os
 from dotenv import load_dotenv
 
@@ -134,27 +133,7 @@ def create_app():
     @app.route("/api/courses", methods=["GET"])
     def get_courses():
         try:
-            # Sequential execution with detailed timing
-            sequential_start = time.time()
-            
-            coursera_start = time.time()
-            coursera_courses_seq = scraper.get_coursera_courses()
-            coursera_time = time.time() - coursera_start
-            
-            harvard_start = time.time()
-            harvard_courses_seq = scraper.get_harvard_courses()
-            harvard_time = time.time() - harvard_start
-            
-            sequential_time = time.time() - sequential_start
-            
-            logger.info(f"Sequential timing details:")
-            logger.info(f"  Coursera fetch: {coursera_time:.2f}s")
-            logger.info(f"  Harvard fetch: {harvard_time:.2f}s")
-            logger.info(f"  Total sequential: {sequential_time:.2f}s")
-
-            # Parallel execution with detailed timing
-            parallel_start = time.time()
-
+           
             # Parallel execution
             with ThreadPoolExecutor(max_workers=2) as executor:
                 coursera_future = executor.submit(scraper.get_coursera_courses)
@@ -163,40 +142,6 @@ def create_app():
                 harvard_future = executor.submit(scraper.get_harvard_courses)
                 harvard_courses = harvard_future.result()
 
-                
-                # Time each future separately
-                c_start = time.time()
-                coursera_courses = coursera_future.result()
-                c_time = time.time() - c_start
-                
-                h_start = time.time()
-                harvard_courses = harvard_future.result()
-                h_time = time.time() - h_start
-
-                parallel_time = time.time() - parallel_start
-            
-                logger.info(f"Parallel timing details:")
-                logger.info(f"  Coursera result wait: {c_time:.2f}s")
-                logger.info(f"  Harvard result wait: {h_time:.2f}s")
-                logger.info(f"  Total parallel: {parallel_time:.2f}s")
-
-                speedup = sequential_time / parallel_time if parallel_time > 0 else 0
-
-                print({
-                        "timing": {
-                "sequential": {
-                    "coursera_time": f"{coursera_time:.2f}s",
-                    "harvard_time": f"{harvard_time:.2f}s",
-                    "total_time": f"{sequential_time:.2f}s"
-                },
-                "parallel": {
-                    "coursera_wait": f"{c_time:.2f}s",
-                    "harvard_wait": f"{h_time:.2f}s",
-                    "total_time": f"{parallel_time:.2f}s"
-                },
-                "speedup_factor": f"{speedup:.2f}x"
-            }
-                    })
 
                 all_courses = coursera_courses + harvard_courses
                 random.shuffle(all_courses)
