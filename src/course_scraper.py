@@ -117,3 +117,43 @@ class CourseScraper:
                 continue
 
         return course_list
+
+    def get_udacity_courses(self):
+        course_list = []
+        soup = self._make_request('https://www.classcentral.com/provider/udacity?free=true')
+
+        if not soup:
+            return course_list
+
+        courses = soup.find_all('li', class_='course-list-course')
+
+        if not courses:
+            return course_list
+
+        for course in courses:
+            try:
+                title_element = course.find('div', class_='row').find('h2')
+                details_element = course.find('div').find('p')
+                link = course.find('div', class_='row').find('a')['href']
+                rating_element = course.find('div').find('div', class_='row').find('div').find('li', class_='icon-star icon-small')
+            
+                if not (title_element):
+                    continue
+
+                course_data = Course(
+                    id=str(uuid.uuid4()),
+                    title=title_element.text.strip(),
+                    provider="Udacity",
+                    detail=details_element.text.strip() if details_element else 'N/A',
+                    rating=rating_element.text.strip() if rating_element else 'N/A',
+                    category=link,
+                    link=link
+                )
+
+                course_list.append(vars(course_data))
+
+            except Exception as e:
+                logger.error(f"Error parsing Udacity course: {str(e)}")
+                continue
+
+        return course_list
