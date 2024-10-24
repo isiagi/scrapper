@@ -1,56 +1,22 @@
-appdirs==1.4.3
-asgiref==3.8.1
-awsebcli==3.20.10 # path isue or above
-# backports.zoneinfo==0.2.1
-bcrypt==4.0.0 # Consider upgrading to a newer version
 beautifulsoup4==4.12.3
-blessed==1.20.0
 blinker==1.8.2
-botocore==1.31.85
 bs4==0.0.2
-cement==2.8.2
-certifi==2019.11.28 # You may want to update this
-chardet==3.0.4
-charset-normalizer==3.3.2
+certifi==2024.8.30
+charset-normalizer==3.4.0
 click==8.1.7
-colorama==0.4.3
-cryptography==41.0.3 # Consider upgrading to a newer version
-defusedxml==0.6.0
-distlib==0.3.0
-distro==1.4.0
-Django==4.2.14 # path isue
-filelock==3.0.12
 flask==3.0.3
 Flask-Cors==5.0.0
-future==0.18.2 # path isue
-idna==2.8 # Update this if necessary
+idna==3.10
 importlib-metadata==8.5.0
 itsdangerous==2.2.0
 jinja2==3.1.4
-jmespath==1.0.1
-lockfile==0.12.2
 MarkupSafe==2.1.5
-oauthlib==3.1.0
-packaging==20.3
-paramiko==2.6.0
-pathspec==0.10.1
-# Pillow==7.0.0 # stoped here
-protobuf==3.6.1
-pyparsing==2.4.6
-PyQt5==5.14.1
-PyQtWebEngine==5.14.0
-python-dateutil==2.7.3
-pytz==2019.3
-PyYAML==5.3.1
-redis # No version specified; add if necessary
-requests==2.31.0
-six==1.14.0
+requests==2.32.3
 soupsieve==2.6
-sqlparse==0.5.0
-typing-extensions==4.12.2
-urllib3==1.26.18
-virtualenv==20.0.17
-Werkzeug==3.0.4
+urllib3==2.2.3
+werkzeug==3.0.4
 zipp==3.20.2
-flask-caching
-celery
+gunicorn==19.7.1
+redis==5.0.0
+celery==5.2.7
+Flask-Caching==1.10.1  # or the latest version

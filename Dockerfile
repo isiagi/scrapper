@@ -9,6 +9,7 @@ COPY . /app
 
 # Install the required packages from requirements.txt
 RUN pip install --no-cache-dir -r requirement.txt
+RUN pip install python-dotenv
 
 # Expose the port the Flask app will run on
 EXPOSE 5000
