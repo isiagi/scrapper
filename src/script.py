@@ -12,7 +12,7 @@ CORS(app)
 
 # Cache configuration
 app.config['CACHE_TYPE'] = 'RedisCache'
-app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://127.0.0.1:6379/0')
+app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://redis:6379/0')
 cache = Cache(app)
 
 # Scheduler configuration
