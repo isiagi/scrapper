@@ -46,7 +46,7 @@ echo "Starting Flask application..."\n\
 echo "Current directory: $(pwd)"\n\
 echo "Python path: $PYTHONPATH"\n\
 echo "Flask app: $FLASK_APP"\n\
-python -m flask run --host=0.0.0.0 --port=$PORT' > start.sh && \
+python src/script.py --host=0.0.0.0 --port=$PORT' > start.sh && \
     chmod +x start.sh
 
 # Run the startup script
