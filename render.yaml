@@ -4,9 +4,9 @@ services:
     name: flask-redis-app
     runtime: docker
     dockerfilePath: ./Dockerfile # We'll modify this to include Redis
-    # region: oregon
-    # plan: starter
-    # numInstances: 1
+    region: oregon
+    plan: starter
+    numInstances: 1
     envVars:
       - key: FLASK_APP
         value: script.py
