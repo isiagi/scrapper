@@ -13,7 +13,7 @@ services:
       CACHE_REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
-    command: flask run --host=0.0.0.0
+    command: python src/script.py
 
   redis:
     image: "redis:latest"
