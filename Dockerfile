@@ -14,7 +14,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     CACHE_REDIS_URL=redis://localhost:6379/0 \
     CELERY_BROKER_URL=redis://localhost:6379/1 \
     CELERY_RESULT_BACKEND=redis://localhost:6379/1 \
-    FLASK_DEBUG=1
+    FLASK_DEBUG=1 \
+    PORT=5000
 
 # Set the working directory inside the container
 WORKDIR /app
