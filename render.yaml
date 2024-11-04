@@ -1,7 +1,7 @@
 services:
   # Combined Flask and Redis Service
   - type: web
-    name: flask-redis-app
+    name: free-course-hive
     runtime: docker
     dockerfilePath: ./Dockerfile
     region: oregon
