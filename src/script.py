@@ -7,6 +7,7 @@ import os
 from course_scaper import Scraper
 import threading
 from concurrent.futures import ThreadPoolExecutor
+import requests  
 
 app = Flask(__name__)
 CORS(app)
@@ -81,6 +82,16 @@ def clear_cache():
 @scheduler.task('interval', id='scheduled_scraping', hours=24)
 def scheduled_task():
     run_background_scraping()
+
+# New scheduler task to keep the service alive
+@scheduler.task('interval', id='keep_alive', minutes=14)
+def keep_service_alive():
+    try:
+        
+        response = requests.get('https://flask-redis-app.onrender.com/api/courses')
+        print(f"Keep-alive ping status: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f"Keep-alive ping failed: {e}")
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
