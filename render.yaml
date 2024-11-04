@@ -18,7 +18,3 @@ services:
         value: 5000
       - key: CACHE_REDIS_URL
         value: redis://localhost:6379/0
-      - key: CELERY_BROKER_URL
-        value: redis://localhost:6379/1
-      - key: CELERY_RESULT_BACKEND
-        value: redis://localhost:6379/1
