@@ -5,6 +5,8 @@ from flask_caching import Cache
 from flask_apscheduler import APScheduler
 import os
 from course_scaper import Scraper
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 # Flask app initialization
 app = Flask(__name__)
@@ -12,7 +14,7 @@ CORS(app)
 
 # Cache configuration
 app.config['CACHE_TYPE'] = 'RedisCache'
-app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://redis:6379/0')
+app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://127.0.0.1:6379/0')
 cache = Cache(app)
 
 # Scheduler configuration
@@ -30,14 +32,35 @@ scheduler.start()
 @cache.cached(timeout=86400)  # Cache the result for 24 hours
 def get_courses():
     scraper = Scraper()
-    coursera_courses = scraper.scrape_coursera()
-    harvard_courses = scraper.scrape_harvard_courses()
+    with ThreadPoolExecutor(max_workers= 2) as executor:
+        coursera_future = executor.submit(scraper.scrape_coursera)
+        coursera_courses = coursera_future.result()
 
-    # Combine all courses into one list and shuffle
-    all_courses = coursera_courses + harvard_courses
-    random.shuffle(all_courses)
+        harvard_future = executor.submit(scraper.scrape_harvard_courses)
+        harvard_courses = harvard_future.result()
 
-    return jsonify(all_courses)
+        # Combine all courses into one list and shuffle
+        all_courses = coursera_courses + harvard_courses
+        random.shuffle(all_courses)
+
+        return jsonify(all_courses)
+    # coursera_courses = scraper.scrape_coursera()
+    # harvard_courses = scraper.scrape_harvard_courses()
+
+    # # Combine all courses into one list and shuffle
+    # all_courses = coursera_courses + harvard_courses
+    # random.shuffle(all_courses)
+
+    # return jsonify(all_courses)
+
+
+def run_background_scraping():
+    def background_scrape():
+        scraper = Scraper()
+        scraper.scrape_coursera()
+        scraper.scrape_harvard_courses()
+    thread = threading.Thread(target=background_scrape)
+    thread.start()
 
 
 # clear cache
@@ -49,7 +72,7 @@ def clear_cache():
 # Schedule the task to run periodically (e.g., every day at 02:00 AM)
 @scheduler.task('interval', id='scheduled_scraping', hours=24)
 def scheduled_task():
-    get_courses()
+    run_background_scraping()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

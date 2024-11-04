@@ -43,26 +43,26 @@ class Scraper:
         """Fetch a single Coursera page with enhanced logging."""
         base_url = 'https://www.coursera.org/courses?query=free'
         url = f"{base_url}&page={page}&index=prod_all_launched_products_term_optimization"
-        self.logger.info(f"Fetching Coursera page: {url}")
-        print(f"Fetching Coursera page: {url}")
+        # self.logger.info(f"Fetching Coursera page: {url}")
+        # print(f"Fetching Coursera page: {url}")
         
         response = self._make_request(url)
         if response:
-            self.logger.info(f"Successfully fetched page {page}")
-            print(f"Successfully fetched page {page}")
+            # self.logger.info(f"Successfully fetched page {page}")
+            # print(f"Successfully fetched page {page}")
             return response.text
         else:
             self.logger.error(f"Failed to fetch Coursera page {page}")
-            print(f"Failed to fetch Coursera page {page}")
+            # print(f"Failed to fetch Coursera page {page}")
         return None
 
     def scrape_coursera(self):
         """Scrape multiple pages of Coursera courses concurrently"""
         courses_list = []
-        page_numbers = range(1, 8)  # Fetch first 3 pages
+        page_numbers = range(1, 9)  # Fetch first 3 pages
 
         try:
-            with ThreadPoolExecutor(max_workers=7) as executor:
+            with ThreadPoolExecutor(max_workers=2) as executor:
                 # Fetch all pages concurrently
                 page_contents = list(executor.map(self._fetch_coursera_page, page_numbers))
 
@@ -84,7 +84,7 @@ class Scraper:
             
                         if image_element and 'src' in image_element.attrs:
                             img_url = image_element['src']
-                            print(f"Found image URL: {img_url}")
+                            # print(f"Found image URL: {img_url}")
                             base_url = "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/"
                             image_url = img_url.replace(base_url, "")
                         else:
@@ -103,14 +103,14 @@ class Scraper:
                             "link": f"https://www.coursera.org{a_tag['href']}",
                             "image": image_url
                         }
-                        print('course data', course_data)
+                        # print('course data', course_data)
                         courses_list.append(course_data)
 
                     except Exception as e:
                         self.logger.error(f"Error parsing Coursera course: {str(e)}")
                         continue
 
-            self.logger.info(f"Fetched {len(courses_list)} Coursera courses from {len(page_numbers)} pages")
+            # self.logger.info(f"Fetched {len(courses_list)} Coursera courses from {len(page_numbers)} pages")
             return courses_list
 
         except Exception as e:
@@ -138,7 +138,7 @@ class Scraper:
 
                     if image_element and 'src' in image_element.attrs:
                         img_url = image_element['src']
-                        print(f"Found image URL: {img_url}")
+                        # print(f"Found image URL: {img_url}")
                         # add https://pll.harvard.edu/ to the image URL
                         img_url = 'https://pll.harvard.edu' + img_url
                         
@@ -165,7 +165,7 @@ class Scraper:
                     self.logger.error(f"Error parsing Harvard course: {str(e)}")
                     continue
 
-            self.logger.info(f"Fetched {len(courses_list)} Harvard courses")
+            # self.logger.info(f"Fetched {len(courses_list)} Harvard courses")
             return courses_list
         else:
             self.logger.error("Failed to fetch Harvard courses")
