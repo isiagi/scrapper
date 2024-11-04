@@ -9,7 +9,7 @@ services:
     numInstances: 1
     envVars:
       - key: FLASK_APP
-        value: src.script:app
+        value: src/script
       - key: PYTHONPATH
         value: /app
       - key: PYTHONDONTWRITEBYTECODE

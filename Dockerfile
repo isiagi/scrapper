@@ -9,7 +9,7 @@ RUN apt-get update && \
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    FLASK_APP=src.script:app \
+    FLASK_APP=src/script \
     PYTHONPATH=/app \
     CACHE_REDIS_URL=redis://localhost:6379/0 \
     CELERY_BROKER_URL=redis://localhost:6379/1 \
