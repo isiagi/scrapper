@@ -1,0 +1,26 @@
+services:
+  # Combined Flask and Redis Service
+  - type: web
+    name: flask-redis-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    numInstances: 1
+    envVars:
+      - key: FLASK_APP
+        value: src.script
+      - key: PYTHONPATH
+        value: /app
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PORT
+        value: "5000"
+      - key: FLASK_DEBUG
+        value: "1"
+      - key: CACHE_REDIS_URL
+        value: redis://localhost:6379/0
+      - key: REDIS_HOST
+        value: localhost
