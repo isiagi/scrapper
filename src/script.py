@@ -88,7 +88,7 @@ def scheduled_task():
 def keep_service_alive():
     try:
         
-        response = requests.get('https://flask-redis-app.onrender.com/api/courses')
+        response = requests.get('https://free-course-hive.onrender.com/api/courses')
         print(f"Keep-alive ping status: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Keep-alive ping failed: {e}")
