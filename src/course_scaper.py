@@ -62,7 +62,7 @@ class Scraper:
         page_numbers = range(1, 9)  # Fetch first 3 pages
 
         try:
-            with ThreadPoolExecutor(max_workers=2) as executor:
+            with ThreadPoolExecutor(max_workers=8) as executor:
                 # Fetch all pages concurrently
                 page_contents = list(executor.map(self._fetch_coursera_page, page_numbers))
 
