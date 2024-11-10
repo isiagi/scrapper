@@ -25,6 +25,7 @@ COPY requirements.txt .
 # COPY .env .
 
 # Install Python dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install python-dotenv
 
