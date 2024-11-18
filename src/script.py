@@ -1,3 +1,6 @@
+import sys
+sys.path.append('src')
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import random
@@ -5,6 +8,7 @@ from flask_caching import Cache
 from flask_apscheduler import APScheduler
 import os
 from course_scaper import Scraper
+# from selenia import UdacityScraper
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import requests  
@@ -14,7 +18,7 @@ CORS(app)
 
 # Cache configuration
 app.config['CACHE_TYPE'] = 'RedisCache'
-app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://redis:6379/0')
+app.config['CACHE_REDIS_URL'] = os.getenv('CACHE_REDIS_URL', 'redis://127.0.0.1:6379/0')
 cache = Cache(app)
 
 # Scheduler configuration
@@ -39,14 +43,24 @@ def get_courses():
     
     # If not in cache, fetch and store the data
     scraper = Scraper()
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    # udacity_scraper = UdacityScraper()
+    with ThreadPoolExecutor(max_workers=4) as executor:
         coursera_future = executor.submit(scraper.scrape_coursera)
         harvard_future = executor.submit(scraper.scrape_harvard_courses)
+        udacity_future = executor.submit(scraper.scrape_udacity_courses)
+        udemy_future = executor.submit(scraper.scrape_udemy_courses)
         
         coursera_courses = coursera_future.result()
         harvard_courses = harvard_future.result()
+        udacity_courses = udacity_future.result()
+        udemy_courses = udemy_future.result()
+
+        # print(f"Coursera courses: {len(coursera_courses)}")
+        # print(f"Harvard courses: {len(harvard_courses)}")
+        # print(f"Udemy courses: {len(udemy_courses)}")
         
-        all_courses = coursera_courses + harvard_courses
+        all_courses = coursera_courses + harvard_courses + udacity_courses + udemy_courses
+        # print(f"All courses: {len(all_courses)}")
         random.shuffle(all_courses)
         
         # Store in cache for 24 hours
@@ -57,14 +71,20 @@ def get_courses():
 def run_background_scraping():
     def background_scrape():
         scraper = Scraper()
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        # udemy_scraper = UdemyCourseScraper(logger=scraper.logger)
+        # udacity_scraper = UdacityScraper()
+        with ThreadPoolExecutor(max_workers=4) as executor:
             coursera_future = executor.submit(scraper.scrape_coursera)
             harvard_future = executor.submit(scraper.scrape_harvard_courses)
+            udacity_future = executor.submit(scraper.scrape_udacity_courses)
+            udemy_future = executor.submit(scraper.scrape_udemy_courses)
             
             coursera_courses = coursera_future.result()
             harvard_courses = harvard_future.result()
+            udacity_courses = udacity_future.result()
+            udemy_courses = udemy_future.result()
             
-            all_courses = coursera_courses + harvard_courses
+            all_courses = coursera_courses + harvard_courses + udacity_courses + udemy_courses
             random.shuffle(all_courses)
             
             # Update the cache with new data

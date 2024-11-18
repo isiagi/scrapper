@@ -170,3 +170,172 @@ class Scraper:
         else:
             self.logger.error("Failed to fetch Harvard courses")
             return []
+        
+    def scrape_udacity_courses(self):
+        """Scrape courses from Udacity's online course catalog"""
+        courses_list = []
+        URL = 'https://www.classcentral.com/provider/udacity?free=true'
+        
+        try:
+            response = self._make_request(URL)
+            if not response:
+                self.logger.error("Failed to fetch Udacity courses")
+                return []
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            course_items = soup.find_all('li', class_='course-list-course')
+
+            def extract_image_url(course_item):
+                """Extract the course image URL with multiple fallback strategies."""
+                # Try to find an image within the <picture> tag
+                img = course_item.find('picture')
+                # print(img)
+                if img:
+                    # Check for 'img' tag inside <picture>
+                    # img_tag = img.find('img')
+                    # if img_tag and img_tag.get('src'):
+                    #     return img_tag['src']
+                    
+                    # Check for 'source' tag with 'srcset' attribute inside <picture>
+                    source_tag = img.find('source')
+                    if source_tag and source_tag.get('srcset'):
+                        try:
+                            # Split the srcset into multiple URLs and take the last one
+                            last_srcset_item = source_tag['srcset'].split(',')[0]
+                            # Further split by space to get just the URL
+                            image_url = last_srcset_item.split()[0]
+                            return image_url
+                        except (IndexError, AttributeError):
+                        # Return a fallback image or 'N/A' if there's an issue
+                         return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+                    # If 'srcset' attribute is not found, return the first URL in 'srcset'
+                        # return source_tag['srcset'].split(',')[0].split()[2]  # Use first URL in srcset
+                    
+                # Fallback: check if there's any 'img' tag directly inside the course item
+                fallback_img = course_item.find('img')
+                if fallback_img and fallback_img.get('src'):
+                    return fallback_img['src']
+                
+                # If all fails, return a placeholder or indicate missing image
+                return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+
+            for course_item in course_items:
+                try:
+                    # Extract course details
+                    title_element = course_item.find('h2', class_='text-1')
+                    link_element = course_item.find('a', class_='course-name')
+                    detail_element = course_item.find('p', class_='text-2')
+                    rating_element = course_item.find('span', class_='cmpt-rating-medium')
+                    image_element = course_item.find('picture').find('img')
+
+                    # print(image_element, '===test====')
+                    
+                    course_data = {
+                        "id": str(uuid.uuid4()),
+                        "title": title_element.text.strip() if title_element else 'N/A',
+                        "provider": "Udacity",
+                        "link": link_element.get('href', 'N/A') if link_element else 'N/A',
+                        "detail": detail_element.text.strip() if detail_element else 'N/A',
+                        "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
+                        "category": 'N/A',
+                        "image": extract_image_url(course_item)
+                    }
+                    # print(course_data)
+                    courses_list.append(course_data)
+
+                except Exception as e:
+                    self.logger.error(f"Error parsing Udacity course: {str(e)}")
+                    continue
+
+            self.logger.info(f"Fetched {len(courses_list)} Udacity courses")
+            # print(courses_list)
+            return courses_list
+
+        except Exception as e:
+            self.logger.error(f"Error in scraping Udacity courses: {str(e)}")
+            return []
+        
+
+    def scrape_udemy_courses(self):
+        """Scrape courses from Udemy's online course catalog"""
+        courses_list = []
+        URL = 'https://www.classcentral.com/provider/udemy?free=true'
+        
+        try:
+            response = self._make_request(URL)
+            if not response:
+                self.logger.error("Failed to fetch Udacity courses")
+                return []
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            course_items = soup.find_all('li', class_='course-list-course')
+
+            def extract_image_url(course_item):
+                """Extract the course image URL with multiple fallback strategies."""
+                # Try to find an image within the <picture> tag
+                img = course_item.find('picture')
+                # print(img)
+                if img:
+                    # Check for 'img' tag inside <picture>
+                    # img_tag = img.find('img')
+                    # if img_tag and img_tag.get('src'):
+                    #     return img_tag['src']
+                    
+                    # Check for 'source' tag with 'srcset' attribute inside <picture>
+                    source_tag = img.find('source')
+                    if source_tag and source_tag.get('srcset'):
+                        try:
+                            # Split the srcset into multiple URLs and take the last one
+                            last_srcset_item = source_tag['srcset'].split(',')[0]
+                            # Further split by space to get just the URL
+                            image_url = last_srcset_item.split()[0]
+                            return image_url
+                        except (IndexError, AttributeError):
+                        # Return a fallback image or 'N/A' if there's an issue
+                         return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+                    # If 'srcset' attribute is not found, return the first URL in 'srcset'
+                        # return source_tag['srcset'].split(',')[0].split()[2]  # Use first URL in srcset
+                    
+                # Fallback: check if there's any 'img' tag directly inside the course item
+                fallback_img = course_item.find('img')
+                if fallback_img and fallback_img.get('src'):
+                    return fallback_img['src']
+                
+                # If all fails, return a placeholder or indicate missing image
+                return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+
+            for course_item in course_items:
+                try:
+                    # Extract course details
+                    title_element = course_item.find('h2', class_='text-1')
+                    link_element = course_item.find('a', class_='course-name')
+                    detail_element = course_item.find('p', class_='text-2')
+                    rating_element = course_item.find('span', class_='cmpt-rating-medium')
+                    image_element = course_item.find('picture').find('img')
+
+                    # print(image_element, '===test====')
+                    
+                    course_data = {
+                        "id": str(uuid.uuid4()),
+                        "title": title_element.text.strip() if title_element else 'N/A',
+                        "provider": "Udemy",
+                        "link": link_element.get('href', 'N/A') if link_element else 'N/A',
+                        "detail": detail_element.text.strip() if detail_element else 'N/A',
+                        "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
+                        "category": 'N/A',
+                        "image": extract_image_url(course_item)
+                    }
+                    # print(course_data)
+                    courses_list.append(course_data)
+
+                except Exception as e:
+                    self.logger.error(f"Error parsing Udacity course: {str(e)}")
+                    continue
+
+            self.logger.info(f"Fetched {len(courses_list)} Udacity courses")
+            # print(courses_list)
+            return courses_list
+
+        except Exception as e:
+            self.logger.error(f"Error in scraping Udacity courses: {str(e)}")
+            return []
