@@ -4,6 +4,7 @@ import random
 import logging
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+import re
 
 
 
@@ -207,7 +208,7 @@ class Scraper:
                             return image_url
                         except (IndexError, AttributeError):
                         # Return a fallback image or 'N/A' if there's an issue
-                         return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+                         return 'https://ccweb.imgix.net/https%3A%2F%2Fwww.classcentral.com%2Fimages%2Flogos%2Fproviders%2Fudemy-hz.png?auto=format&ixlib=php-4.1.0&s=4e8ff3b5ec79b25af845d12fed93431b'
                     # If 'srcset' attribute is not found, return the first URL in 'srcset'
                         # return source_tag['srcset'].split(',')[0].split()[2]  # Use first URL in srcset
                     
@@ -217,7 +218,38 @@ class Scraper:
                     return fallback_img['src']
                 
                 # If all fails, return a placeholder or indicate missing image
-                return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+                return 'https://ccweb.imgix.net/https%3A%2F%2Fwww.classcentral.com%2Fimages%2Flogos%2Fproviders%2Fudemy-hz.png?auto=format&ixlib=php-4.1.0&s=4e8ff3b5ec79b25af845d12fed93431b'
+            
+
+            def clean_udacity_url(url):
+                """Clean Udemy course URL by removing 'udemy-' prefix and numeric suffix.
+                
+                Args:
+                    url (str): The original Udemy course URL
+                    
+                Returns:
+                    str: Cleaned URL with prefix and suffix removed
+                """
+                try:
+                    # Split the URL to get the course slug
+                    parts = url.split('/course/')
+                    if len(parts) != 2:
+                        return url
+                        
+                    base_url = parts[0]
+                    course_slug = parts[1]
+                    
+                    # Remove the numeric suffix (e.g., -25803)
+                    course_slug = re.sub(r'-\d+/?$', '', course_slug)
+                    
+                    # Remove 'udemy-' prefix from the course slug
+                    if course_slug.startswith('udacity-'):
+                        course_slug = course_slug[6:]
+                        
+                    # Reconstruct the URL
+                    return f"{base_url}/course/{course_slug}"
+                except:
+                    return url
 
             for course_item in course_items:
                 try:
@@ -234,7 +266,7 @@ class Scraper:
                         "id": str(uuid.uuid4()),
                         "title": title_element.text.strip() if title_element else 'N/A',
                         "provider": "Udacity",
-                        "link": link_element.get('href', 'N/A') if link_element else 'N/A',
+                        "link": clean_udacity_url("https://www.udacity.com" + link_element.get('href', 'N/A')) if link_element else 'N/A',
                         "detail": detail_element.text.strip() if detail_element else 'N/A',
                         "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
                         "category": 'N/A',
@@ -303,6 +335,35 @@ class Scraper:
                 
                 # If all fails, return a placeholder or indicate missing image
                 return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+            def clean_udemy_url(url):
+                """Clean Udemy course URL by removing 'udemy-' prefix and numeric suffix.
+                
+                Args:
+                    url (str): The original Udemy course URL
+                    
+                Returns:
+                    str: Cleaned URL with prefix and suffix removed
+                """
+                try:
+                    # Split the URL to get the course slug
+                    parts = url.split('/course/')
+                    if len(parts) != 2:
+                        return url
+                        
+                    base_url = parts[0]
+                    course_slug = parts[1]
+                    
+                    # Remove the numeric suffix (e.g., -25803)
+                    course_slug = re.sub(r'-\d+/?$', '', course_slug)
+                    
+                    # Remove 'udemy-' prefix from the course slug
+                    if course_slug.startswith('udemy-'):
+                        course_slug = course_slug[6:]
+                        
+                    # Reconstruct the URL
+                    return f"{base_url}/course/{course_slug}"
+                except:
+                    return url
 
             for course_item in course_items:
                 try:
@@ -319,7 +380,7 @@ class Scraper:
                         "id": str(uuid.uuid4()),
                         "title": title_element.text.strip() if title_element else 'N/A',
                         "provider": "Udemy",
-                        "link": link_element.get('href', 'N/A') if link_element else 'N/A',
+                        "link": clean_udemy_url("https://www.udemy.com" + link_element.get('href', 'N/A')) if link_element else 'N/A',
                         "detail": detail_element.text.strip() if detail_element else 'N/A',
                         "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
                         "category": 'N/A',
