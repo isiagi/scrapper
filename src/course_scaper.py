@@ -4,6 +4,7 @@ import random
 import logging
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+import re
 
 
 
@@ -169,4 +170,374 @@ class Scraper:
             return courses_list
         else:
             self.logger.error("Failed to fetch Harvard courses")
+            return []
+    def scrape_Life_courses(self):
+        """Scrape courses from Life's online course catalog"""
+        courses_list = []
+        URL = 'https://www.life-global.org/allcourses'
+        response = self._make_request(URL)
+
+        if not response:
+            self.logger.error("Failed to fetch Life courses")
+            return []
+
+        try:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            course_containers = soup.find_all('span', class_='ui-core-emotion-cache-4233sn')
+            
+            self.logger.info(f"Found {len(course_containers)} potential course containers")
+
+            for container in course_containers:
+                try:
+                    # Extract course title
+                    title_element = container.find('h2', class_='ui-core-emotion-cache-1k10co')
+                    
+                    # Extract course link from the span's href attribute
+                    course_link = container.get('href', '')
+                    
+                    # Extract description
+                    description = container.find('p', class_='ui-core-emotion-cache-1yh6jjn')
+                    
+                    # Extract enrollment count
+                    enrollment_element = container.find('p', class_='ui-core-emotion-cache-1h70fjn')
+                    
+                    # Extract image URL - specifically targeting the noscript img with data-nimg="fill"
+                    noscript_element = container.find('noscript')
+                    img_url = None
+                    if noscript_element:
+                        img_tag = noscript_element.find('img', attrs={'data-nimg': 'fill'})
+                        if img_tag and 'src' in img_tag.attrs:
+                            # Extract the base image URL from the src attribute
+                            img_src = img_tag['src']
+                            if img_src.startswith('/_next/image'):
+                                img_url = f"https://www.life-global.org{img_src}"
+
+                    # Skip if required elements are missing
+                    if not title_element:
+                        self.logger.warning("Skipping course - missing title element")
+                        continue
+
+                    course_data = {
+                        "id": str(uuid.uuid4()),
+                        "title": title_element.text.strip() if title_element else 'N/A',
+                        "provider": "Life HP",
+                        "detail": description.text.strip() if description else 'N/A',
+                        "enrollment": enrollment_element.text.strip() if enrollment_element else 'N/A',
+                        "link": f"https://www.life-global.org{course_link}" if course_link else 'N/A',
+                        "image": img_url if img_url else 'N/A'
+                    }
+
+                    self.logger.debug(f"Parsed course: {course_data['title']}")
+                    courses_list.append(course_data)
+
+                except Exception as e:
+                    self.logger.error(f"Error parsing individual course: {str(e)}")
+                    continue
+
+            self.logger.info(f"Successfully scraped {len(courses_list)} Life courses")
+            return courses_list
+
+        except Exception as e:
+            self.logger.error(f"Error during Life courses scraping: {str(e)}")
+            return []
+        
+    def scrape_who_courses(self):
+        """Scrape courses from WHO online course catalog"""
+        courses_list = []
+        URL = 'https://openwho.org/courses?q=&channel=&lang=&category=&topic='
+        response = self._make_request(URL)
+
+        if not response:
+            self.logger.error("Failed to fetch WHO courses")
+            return []
+
+        try:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            course_containers = soup.find_all('div', class_='course-card course-card--expandable')
+            
+            self.logger.info(f"Found WHO {len(course_containers)} potential course containers")
+
+            for container in course_containers:
+                try:
+                    # Extract course title and link
+                    title_element = container.find('div', class_='course-card__title').find('a')
+                    course_link = title_element.get('href') if title_element else None
+                    
+                    # Extract description
+                    description = container.find('div', class_='course-card__description').find('p')
+                    
+                    # Extract provider
+                    provider = container.find('div', class_='course-card__teacher')
+                    
+                    # Extract course date/type
+                    date_element = container.find('li', class_='course-card__date').find('span', class_='xi-icon').find_next_sibling('span')
+                    
+                    # Extract language
+                    language_element = container.find('li', class_='course-card__language').find('span', class_='xi-icon').find_next_sibling('span')
+                    
+                    # Extract certificate type
+                    certificate_element = container.find('li', class_='course-card__certificates').find('span', class_='xi-icon').find_next_sibling('span')
+                    
+                    # Extract image URL from the picture element's img tag
+                    img_element = container.find('picture').find('img')
+                    img_url = img_element.get('src') if img_element else None
+
+                    # Skip if required elements are missing
+                    if not title_element:
+                        self.logger.warning("Skipping course - missing title element")
+                        continue
+
+                    course_data = {
+                        "id": str(uuid.uuid4()),
+                        "title": title_element.text.strip() if title_element else 'N/A',
+                        "provider": provider.text.strip() if provider else 'WHO',
+                        "detail": description.text.strip() if description else 'N/A',
+                        "course_type": date_element.text.strip() if date_element else 'N/A',
+                        "language": language_element.text.strip() if language_element else 'N/A',
+                        "certificate": certificate_element.text.strip() if certificate_element else 'N/A',
+                        "link": f"https://openwho.org{course_link}" if course_link else 'N/A',
+                        "image": img_url if img_url else 'N/A'
+                    }
+
+                    self.logger.debug(f"Parsed WHO course: {course_data['title']}")
+                    courses_list.append(course_data)
+
+                except Exception as e:
+                    self.logger.error(f"Error parsing individual WHO course: {str(e)}")
+                    continue
+
+            self.logger.info(f"Successfully scraped {len(courses_list)} WHO courses")
+            return courses_list
+
+        except Exception as e:
+            self.logger.error(f"Error during WHO courses scraping: {str(e)}")
+            return []
+        
+    # def scrape_udacity_courses(self):
+    #     """Scrape courses from Udacity's online course catalog"""
+    #     courses_list = []
+    #     URL = 'https://www.classcentral.com/provider/udacity?free=true'
+        
+    #     try:
+    #         response = self._make_request(URL)
+    #         if not response:
+    #             self.logger.error("Failed to fetch Udacity courses")
+    #             return []
+
+    #         soup = BeautifulSoup(response.text, 'html.parser')
+    #         course_items = soup.find_all('li', class_='course-list-course')
+
+    #         def extract_image_url(course_item):
+    #             """Extract the course image URL with multiple fallback strategies."""
+    #             # Try to find an image within the <picture> tag
+    #             img = course_item.find('picture')
+    #             # print(img)
+    #             if img:
+    #                 # Check for 'img' tag inside <picture>
+    #                 # img_tag = img.find('img')
+    #                 # if img_tag and img_tag.get('src'):
+    #                 #     return img_tag['src']
+                    
+    #                 # Check for 'source' tag with 'srcset' attribute inside <picture>
+    #                 source_tag = img.find('source')
+    #                 if source_tag and source_tag.get('srcset'):
+    #                     try:
+    #                         # Split the srcset into multiple URLs and take the last one
+    #                         last_srcset_item = source_tag['srcset'].split(',')[0]
+    #                         # Further split by space to get just the URL
+    #                         image_url = last_srcset_item.split()[0]
+    #                         return image_url
+    #                     except (IndexError, AttributeError):
+    #                     # Return a fallback image or 'N/A' if there's an issue
+    #                      return 'https://ccweb.imgix.net/https%3A%2F%2Fwww.classcentral.com%2Fimages%2Flogos%2Fproviders%2Fudemy-hz.png?auto=format&ixlib=php-4.1.0&s=4e8ff3b5ec79b25af845d12fed93431b'
+    #                 # If 'srcset' attribute is not found, return the first URL in 'srcset'
+    #                     # return source_tag['srcset'].split(',')[0].split()[2]  # Use first URL in srcset
+                    
+    #             # Fallback: check if there's any 'img' tag directly inside the course item
+    #             fallback_img = course_item.find('img')
+    #             if fallback_img and fallback_img.get('src'):
+    #                 return fallback_img['src']
+                
+    #             # If all fails, return a placeholder or indicate missing image
+    #             return 'https://ccweb.imgix.net/https%3A%2F%2Fwww.classcentral.com%2Fimages%2Flogos%2Fproviders%2Fudemy-hz.png?auto=format&ixlib=php-4.1.0&s=4e8ff3b5ec79b25af845d12fed93431b'
+            
+
+    #         def clean_udacity_url(url):
+    #             """Clean Udemy course URL by removing 'udemy-' prefix and numeric suffix.
+                
+    #             Args:
+    #                 url (str): The original Udemy course URL
+                    
+    #             Returns:
+    #                 str: Cleaned URL with prefix and suffix removed
+    #             """
+    #             try:
+    #                 # Split the URL to get the course slug
+    #                 parts = url.split('/course/')
+    #                 if len(parts) != 2:
+    #                     return url
+                        
+    #                 base_url = parts[0]
+    #                 course_slug = parts[1]
+                    
+    #                 # Remove the numeric suffix (e.g., -25803)
+    #                 course_slug = re.sub(r'-\d+/?$', '', course_slug)
+                    
+    #                 # Remove 'udemy-' prefix from the course slug
+    #                 if course_slug.startswith('udacity-'):
+    #                     course_slug = course_slug[6:]
+                        
+    #                 # Reconstruct the URL
+    #                 return f"{base_url}/course/{course_slug}"
+    #             except:
+    #                 return url
+
+    #         for course_item in course_items:
+    #             try:
+    #                 # Extract course details
+    #                 title_element = course_item.find('h2', class_='text-1')
+    #                 link_element = course_item.find('a', class_='course-name')
+    #                 detail_element = course_item.find('p', class_='text-2')
+    #                 rating_element = course_item.find('span', class_='cmpt-rating-medium')
+    #                 image_element = course_item.find('picture').find('img')
+
+    #                 # print(image_element, '===test====')
+                    
+    #                 course_data = {
+    #                     "id": str(uuid.uuid4()),
+    #                     "title": title_element.text.strip() if title_element else 'N/A',
+    #                     "provider": "Udacity",
+    #                     "link": clean_udacity_url("https://www.udacity.com" + link_element.get('href', 'N/A')) if link_element else 'N/A',
+    #                     "detail": detail_element.text.strip() if detail_element else 'N/A',
+    #                     "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
+    #                     "category": 'N/A',
+    #                     "image": extract_image_url(course_item)
+    #                 }
+    #                 # print(course_data)
+    #                 courses_list.append(course_data)
+
+    #             except Exception as e:
+    #                 self.logger.error(f"Error parsing Udacity course: {str(e)}")
+    #                 continue
+
+    #         self.logger.info(f"Fetched {len(courses_list)} Udacity courses")
+    #         # print(courses_list)
+    #         return courses_list
+
+    #     except Exception as e:
+    #         self.logger.error(f"Error in scraping Udacity courses: {str(e)}")
+    #         return []
+        
+
+    def scrape_udemy_courses(self):
+        """Scrape courses from Udemy's online course catalog"""
+        courses_list = []
+        URL = 'https://www.classcentral.com/provider/udemy?free=true'
+        
+        try:
+            response = self._make_request(URL)
+            if not response:
+                self.logger.error("Failed to fetch Udacity courses")
+                return []
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            course_items = soup.find_all('li', class_='course-list-course')
+
+            def extract_image_url(course_item):
+                """Extract the course image URL with multiple fallback strategies."""
+                # Try to find an image within the <picture> tag
+                img = course_item.find('picture')
+                # print(img)
+                if img:
+                    # Check for 'img' tag inside <picture>
+                    # img_tag = img.find('img')
+                    # if img_tag and img_tag.get('src'):
+                    #     return img_tag['src']
+                    
+                    # Check for 'source' tag with 'srcset' attribute inside <picture>
+                    source_tag = img.find('source')
+                    if source_tag and source_tag.get('srcset'):
+                        try:
+                            # Split the srcset into multiple URLs and take the last one
+                            last_srcset_item = source_tag['srcset'].split(',')[0]
+                            # Further split by space to get just the URL
+                            image_url = last_srcset_item.split()[0]
+                            return image_url
+                        except (IndexError, AttributeError):
+                        # Return a fallback image or 'N/A' if there's an issue
+                         return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+                    # If 'srcset' attribute is not found, return the first URL in 'srcset'
+                        # return source_tag['srcset'].split(',')[0].split()[2]  # Use first URL in srcset
+                    
+                # Fallback: check if there's any 'img' tag directly inside the course item
+                fallback_img = course_item.find('img')
+                if fallback_img and fallback_img.get('src'):
+                    return fallback_img['src']
+                
+                # If all fails, return a placeholder or indicate missing image
+                return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyHXDWa_y17Bn3eVyMhDOizFfK3o0eJFyyiw&s'
+            def clean_udemy_url(url):
+                """Clean Udemy course URL by removing 'udemy-' prefix and numeric suffix.
+                
+                Args:
+                    url (str): The original Udemy course URL
+                    
+                Returns:
+                    str: Cleaned URL with prefix and suffix removed
+                """
+                try:
+                    # Split the URL to get the course slug
+                    parts = url.split('/course/')
+                    if len(parts) != 2:
+                        return url
+                        
+                    base_url = parts[0]
+                    course_slug = parts[1]
+                    
+                    # Remove the numeric suffix (e.g., -25803)
+                    course_slug = re.sub(r'-\d+/?$', '', course_slug)
+                    
+                    # Remove 'udemy-' prefix from the course slug
+                    if course_slug.startswith('udemy-'):
+                        course_slug = course_slug[6:]
+                        
+                    # Reconstruct the URL
+                    return f"{base_url}/course/{course_slug}"
+                except:
+                    return url
+
+            for course_item in course_items:
+                try:
+                    # Extract course details
+                    title_element = course_item.find('h2', class_='text-1')
+                    link_element = course_item.find('a', class_='course-name')
+                    detail_element = course_item.find('p', class_='text-2')
+                    rating_element = course_item.find('span', class_='cmpt-rating-medium')
+                    image_element = course_item.find('picture').find('img')
+
+                    # print(image_element, '===test====')
+                    
+                    course_data = {
+                        "id": str(uuid.uuid4()),
+                        "title": title_element.text.strip() if title_element else 'N/A',
+                        "provider": "Udemy",
+                        "link": clean_udemy_url("https://www.udemy.com" + link_element.get('href', 'N/A')) if link_element else 'N/A',
+                        "detail": detail_element.text.strip() if detail_element else 'N/A',
+                        "rating": len(rating_element.find_all('i', class_='icon-star')) if rating_element else 'N/A',
+                        "category": 'N/A',
+                        "image": extract_image_url(course_item)
+                    }
+                    # print(course_data)
+                    courses_list.append(course_data)
+
+                except Exception as e:
+                    self.logger.error(f"Error parsing Udacity course: {str(e)}")
+                    continue
+
+            self.logger.info(f"Fetched {len(courses_list)} Udacity courses")
+            # print(courses_list)
+            return courses_list
+
+        except Exception as e:
+            self.logger.error(f"Error in scraping Udacity courses: {str(e)}")
             return []
