@@ -47,19 +47,32 @@ def get_courses():
     with ThreadPoolExecutor(max_workers=4) as executor:
         coursera_future = executor.submit(scraper.scrape_coursera)
         harvard_future = executor.submit(scraper.scrape_harvard_courses)
-        udacity_future = executor.submit(scraper.scrape_udacity_courses)
+        # udacity_future = executor.submit(scraper.scrape_udacity_courses)
         udemy_future = executor.submit(scraper.scrape_udemy_courses)
+        life_future = executor.submit(scraper.scrape_Life_courses)
+        who_future = executor.submit(scraper.scrape_who_courses)
         
         coursera_courses = coursera_future.result()
         harvard_courses = harvard_future.result()
-        udacity_courses = udacity_future.result()
+        # udacity_courses = udacity_future.result()
         udemy_courses = udemy_future.result()
+        life_courses = life_future.result()
+        who_courses = who_future.result()
+        
+        # print(f"Coursera courses: {len(coursera_courses)}")
+        # print(f"Harvard courses: {len(harvard_courses)}")
+        # print(f"Udacity courses: {len(udacity_courses)}")
+        # print(f"Udemy courses: {len(udemy_courses)}")
+        print(f"Life courses: {len(life_courses)}")
+        print(f"WHO courses: {len(who_courses)}")
+        
+        # Concatenate all fetched courses
 
         # print(f"Coursera courses: {len(coursera_courses)}")
         # print(f"Harvard courses: {len(harvard_courses)}")
         # print(f"Udemy courses: {len(udemy_courses)}")
         
-        all_courses = coursera_courses + harvard_courses + udacity_courses + udemy_courses
+        all_courses = coursera_courses + harvard_courses + udemy_courses + life_courses + who_courses
         # print(f"All courses: {len(all_courses)}")
         random.shuffle(all_courses)
         
@@ -76,15 +89,28 @@ def run_background_scraping():
         with ThreadPoolExecutor(max_workers=4) as executor:
             coursera_future = executor.submit(scraper.scrape_coursera)
             harvard_future = executor.submit(scraper.scrape_harvard_courses)
-            udacity_future = executor.submit(scraper.scrape_udacity_courses)
+            # udacity_future = executor.submit(scraper.scrape_udacity_courses)
             udemy_future = executor.submit(scraper.scrape_udemy_courses)
+            life_future = executor.submit(scraper.scrape_Life_courses)
+            who_future = executor.submit(scraper.scrape_who_courses)
             
             coursera_courses = coursera_future.result()
             harvard_courses = harvard_future.result()
-            udacity_courses = udacity_future.result()
+            # udacity_courses = udacity_future.result()
             udemy_courses = udemy_future.result()
+            life_courses = life_future.result()
+            who_courses = who_future.result()
             
-            all_courses = coursera_courses + harvard_courses + udacity_courses + udemy_courses
+            # print(f"Coursera courses: {len(coursera_courses)}")
+            # print(f"Harvard courses: {len(harvard_courses)}")
+            # print(f"Udacity courses: {len(udacity_courses)}")
+            # print(f"Udemy courses: {len(udemy_courses)}")
+            print(f"Life courses: {len(life_courses)}")
+            print(f"WHO courses: {len(who_courses)}")
+            
+            # Concatenate all fetched courses
+            
+            all_courses = coursera_courses + harvard_courses + udemy_courses + life_courses + who_courses
             random.shuffle(all_courses)
             
             # Update the cache with new data
