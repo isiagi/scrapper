@@ -26,4 +26,4 @@ jobs:
           git fetch upstream
           
           # Reset organizational repo's main branch to match your personal repo
-          git push upstream main:main --force
+          git push upstream master:master --force
