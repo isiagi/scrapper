@@ -1,0 +1,29 @@
+name: Sync with Organizational Repo
+on:
+  push:
+    branches:
+      - master
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Personal Repo
+        uses: actions/checkout@v2
+        with:
+          repository: isiagi/scrapper
+          token: ${{ secrets.PAT }}
+          fetch-depth: 0
+      - name: Sync with Organization Repo
+        run: |
+          # Configure git
+          git config --global user.name 'isiagi'
+          git config --global user.email 'isiagigeofrey0@gmail.com'
+          
+          # Add organizational repo as remote
+          git remote add upstream https://${{ secrets.PAT }}@github.com/freecoursehive/freecoursehive_be.git
+          
+          # Fetch all branches from upstream
+          git fetch upstream
+          
+          # Reset organizational repo's main branch to match your personal repo
+          git push upstream master:master --force
